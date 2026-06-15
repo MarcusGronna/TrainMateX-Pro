@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TrainMateX.Api/TrainMateX.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TrainMateX.Api.Tests/TrainMateX.Api.Tests.csproj" />
+  </Folder>
+</Solution>
