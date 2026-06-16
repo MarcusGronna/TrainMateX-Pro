@@ -7,6 +7,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/Dotnet.gitignore
 
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -38,6 +44,7 @@ ScaffoldingReadMe.txt
 
 # dotenv environment variables file
 .env
+.env.local
 
 # Others
 ~$*
@@ -55,3 +62,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Logs
+.log
