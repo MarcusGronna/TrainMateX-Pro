@@ -1,0 +1,46 @@
+{
+  "1" : {
+    "id": "bench-press",
+    "name": "Bench Press",
+    "description": "A compound upper-body exercise performed with a barbell.",
+    "instructions": [
+      "Lie on the bench with your eyes under the bar.",
+      "Grip the bar slightly wider than shoulder-width.",
+      "Lower the bar under control to your chest.",
+      "Press the bar upward until your arms are extended."
+    ],
+    "muscleGroup": "Chest",
+    "equipment": "Barbell",
+    "difficultyLevel": "Intermediate"
+  },
+  "2" : {
+    "id": "squat",
+    "name": "Squat",
+    "description": "A fundamental lower-body compound exercise performed with a barbell on your upper back.",
+    "instructions": [
+      "Position the barbell on your upper traps and step back from the rack.",
+      "Stand with feet shoulder-width apart, toes slightly turned out.",
+      "Brace your core and keep your chest tall.",
+      "Bend your knees and hips to lower yourself until thighs are parallel to the floor.",
+      "Drive through your heels to return to the starting position."
+    ],
+    "muscleGroup": "Legs",
+    "equipment": "Barbell",
+    "difficultyLevel": "Intermediate"
+  },
+  "3" : {
+    "id": "deadlift",
+    "name": "Deadlift",
+    "description": "A compound full-body exercise that targets the posterior chain using a barbell.",
+    "instructions": [
+      "Stand with feet hip-width apart, bar over mid-foot.",
+      "Hinge at the hips and grip the bar just outside your legs.",
+      "Keep your chest up and back flat as you brace your core.",
+      "Drive through the floor and extend your hips to lift the bar.",
+      "Lower the bar under control back to the floor."
+    ],
+    "muscleGroup": "Back",
+    "equipment": "Barbell",
+    "difficultyLevel": "Advanced"
+  }
+}
