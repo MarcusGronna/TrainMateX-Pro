@@ -1,20 +1,21 @@
-{
-  "1": {
+[
+  {
     "id": "bench-press",
     "name": "Bench Press",
     "muscleGroup": "Chest",
     "difficultyLevel": "Intermediate"
   },
-  "2": {
+  {
     "id": "squat",
     "name": "Squat",
     "muscleGroup": "Legs",
     "difficultyLevel": "Intermediate"
   },
-  "3": {
+  {
     "id": "deadlift",
     "name": "Deadlift",
     "muscleGroup": "Back",
     "difficultyLevel": "Advanced"
   }
-}
+]
+
