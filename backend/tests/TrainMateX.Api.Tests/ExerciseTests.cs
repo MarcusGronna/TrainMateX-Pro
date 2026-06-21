@@ -9,4 +9,12 @@ public class ExerciseTests
 
         Assert.Equal(3, exercises.Count);
     }
+
+    [Fact]
+    public void GetExerciseById_WithUnknownId_ReturnsNull()
+    {
+        var exercise = Exercise.GetExerciseById(String.Empty);
+
+        Assert.Null(exercise);
+    }
 }
