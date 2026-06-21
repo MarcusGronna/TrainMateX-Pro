@@ -15,4 +15,9 @@ public class Exercise
             PropertyNameCaseInsensitive = true
         }) ?? [];
     }
+
+    internal static object GetExerciseById(string id)
+    {
+        throw new NotImplementedException();
+    }
 }

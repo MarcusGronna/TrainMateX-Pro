@@ -1,5 +1,4 @@
-{
-  "1" : {
+[{
     "id": "bench-press",
     "name": "Bench Press",
     "description": "A compound upper-body exercise performed with a barbell.",
@@ -13,7 +12,7 @@
     "equipment": "Barbell",
     "difficultyLevel": "Intermediate"
   },
-  "2" : {
+   {
     "id": "squat",
     "name": "Squat",
     "description": "A fundamental lower-body compound exercise performed with a barbell on your upper back.",
@@ -28,7 +27,7 @@
     "equipment": "Barbell",
     "difficultyLevel": "Intermediate"
   },
-  "3" : {
+{
     "id": "deadlift",
     "name": "Deadlift",
     "description": "A compound full-body exercise that targets the posterior chain using a barbell.",
@@ -43,4 +42,4 @@
     "equipment": "Barbell",
     "difficultyLevel": "Advanced"
   }
-}
+]

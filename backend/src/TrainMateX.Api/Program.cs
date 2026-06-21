@@ -3,5 +3,6 @@ var app = builder.Build();
 
 app.MapGet("/exercises", () => Exercise.GetExercises());
 
+app.MapGet("/exercises/{id}", (string id) => Exercise.GetExerciseById(id));
 
 app.Run();
