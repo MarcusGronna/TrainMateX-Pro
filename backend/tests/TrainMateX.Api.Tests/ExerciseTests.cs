@@ -10,10 +10,13 @@ public class ExerciseTests
         Assert.Equal(3, exercises.Count);
     }
 
-    [Fact]
-    public void GetExerciseById_WithUnknownId_ReturnsNull()
+    [Theory]
+    [InlineData("")]
+    [InlineData("non-existant-id")]
+    [InlineData("00000000-0000-0000-0000-000000000000")]
+    public void GetExerciseById_WithUnknownId_ReturnsNull(string id)
     {
-        var exercise = Exercise.GetExerciseById(String.Empty);
+        var exercise = Exercise.GetExerciseById(id);
 
         Assert.Null(exercise);
     }
