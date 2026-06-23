@@ -9,3 +9,5 @@ app.MapGet("/exercises/{id}", (string id) =>
     : Results.NotFound());
 
 app.Run();
+
+public partial class Program { }
