@@ -10,6 +10,15 @@ public class ExerciseTests
         Assert.Equal(3, exercises.Count);
     }
 
+    // TODO: Implement test when Exercise has interface
+    //[Fact]
+    //public void GetExercises_WithNoDataSource_ReturnsNull()
+    //{
+    //    var exercises = Exercise.GetExercises();
+
+    //    Assert.Null(exercises);
+    //}
+
     [Theory]
     [InlineData("")]
     [InlineData("non-existant-id")]
@@ -19,5 +28,13 @@ public class ExerciseTests
         var exercise = Exercise.GetExerciseById(id);
 
         Assert.Null(exercise);
+    }
+
+    [Fact]
+    public void GetExerciseById_ReturnsExercise()
+    {
+        var exercise = Exercise.GetExerciseById("bench-press");
+
+        Assert.Equal("bench-press", exercise?.Id);
     }
 }
