@@ -16,7 +16,7 @@ public class ExerciseEndpointTests : IClassFixture<WebApplicationFactory<Program
     [Fact]
     public async Task GetExercises_ShouldReturn200OK_WhenExercisesExist()
     {
-        var response = await _client.GetAsync($"/exercises");
+        var response = await _client.GetAsync($"/api/exercises");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
@@ -25,7 +25,7 @@ public class ExerciseEndpointTests : IClassFixture<WebApplicationFactory<Program
     public async Task GetExerciseById_ShouldReturn200OK_WhenExerciseExists()
     {
         var id = "bench-press";
-        var response = await _client.GetAsync($"/exercises/{id}");
+        var response = await _client.GetAsync($"/api/exercises/{id}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -38,7 +38,7 @@ public class ExerciseEndpointTests : IClassFixture<WebApplicationFactory<Program
     public async Task GetExerciseById_ShouldReturn404NotFound_WhenExerciseMissing()
     {
         var id = "missing-exercise";
-        var response = await _client.GetAsync($"/exercises/{id}");
+        var response = await _client.GetAsync($"/api/exercises/{id}");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
