@@ -9,7 +9,7 @@ export async function ExerciseList() {
       <div className="text-sm text-gray-500">{exercises.length} exercises loaded</div>
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {exercises.map((exercise) => (
-          <ExerciseCard exercise={exercise} />
+          <ExerciseCard key={exercise.id} exercise={exercise} />
         ))}
       </ul>
     </section>
