@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getExerciseById } from "../api";
 
 type ExerciseDetailProps = {
@@ -7,6 +8,10 @@ type ExerciseDetailProps = {
 
 export async function ExerciseDetail({ exerciseId }: ExerciseDetailProps) {
   const exercise = await getExerciseById(exerciseId);
+
+  if (!exercise) {
+    notFound();
+  }
 
   return (
     <article className="mx-auto max-w-3xl space-y-6 rounded-2xl border border-gray-200 p-6 shadow-sm">
