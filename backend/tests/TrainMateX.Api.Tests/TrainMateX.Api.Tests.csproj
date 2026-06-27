@@ -27,6 +27,10 @@
 		<Content Include="..\..\src\TrainMateX.Api\exercise-list-data.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+
+		<Content Include="..\..\src\TrainMateX.Api\exercise-details-data.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 </Project>
