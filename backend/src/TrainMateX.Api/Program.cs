@@ -20,7 +20,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors("AllowLocalhost3000");
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await ExerciseSeeder.SeedAsync(dbContext);
+}
+
+    app.UseCors("AllowLocalhost3000");
 
 app.MapGet("/api/exercises", () => Exercise.GetExercises());
 
