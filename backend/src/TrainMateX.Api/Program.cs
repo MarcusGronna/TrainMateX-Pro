@@ -26,14 +26,22 @@ using (var scope = app.Services.CreateScope())
     await ExerciseSeeder.SeedAsync(dbContext);
 }
 
-    app.UseCors("AllowLocalhost3000");
+app.UseCors("AllowLocalhost3000");
 
-app.MapGet("/api/exercises", () => Exercise.GetExercises());
+app.MapGet("/api/exercises", async (AppDbContext dbContext) =>
+{
+    var service = new ExerciseService(dbContext);
+    return await service.GetExercises();
+});
 
-app.MapGet("/api/exercises/{id}", (string id) => 
-    Exercise.GetExerciseById(id) is Exercise exercise 
-    ? Results.Ok(exercise) 
-    : Results.NotFound());
+app.MapGet("/api/exercises/{id}", async (string id, AppDbContext dbContext) =>
+{
+    var service = new ExerciseService(dbContext);
+    return await service.GetExerciseById(id)
+        is Exercise exercise
+        ? Results.Ok(exercise)
+        : Results.NotFound();
+});
 
 app.Run();
 
