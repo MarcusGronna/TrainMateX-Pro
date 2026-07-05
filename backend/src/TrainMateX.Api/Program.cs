@@ -44,10 +44,23 @@ app.MapGet("/api/exercises", async (AppDbContext dbContext) =>
 app.MapGet("/api/exercises/{id}", async (string id, AppDbContext dbContext) =>
 {
     var service = new ExerciseService(dbContext);
-    return await service.GetExerciseById(id)
-        is Exercise exercise
-        ? Results.Ok(exercise)
-        : Results.NotFound();
+    var exercise = await service.GetExerciseById(id);
+
+    if (exercise is null)
+    {
+        return Results.NotFound();
+    }
+
+    var response = new ExerciseDto(
+        id: exercise.Id,
+        name: exercise.Name,
+        description: exercise.Description,
+        instructions: exercise.Instructions,
+        muscleGroup: exercise.MuscleGroup,
+        equipment: exercise.Equipment,
+        difficultyLevel: exercise.DifficultyLevel);
+
+    return Results.Ok(response);
 });
 
 app.Run();
@@ -58,5 +71,15 @@ record ExerciseListDto(
     string id,
     string name,
     string muscleGroup,
+    string difficultyLevel
+);
+
+record ExerciseDto(
+    string id,
+    string name,
+    string description,
+    List<string> instructions,
+    string muscleGroup,
+    string equipment,
     string difficultyLevel
 );
