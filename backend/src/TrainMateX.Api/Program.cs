@@ -31,7 +31,14 @@ app.UseCors("AllowLocalhost3000");
 app.MapGet("/api/exercises", async (AppDbContext dbContext) =>
 {
     var service = new ExerciseService(dbContext);
-    return await service.GetExercises();
+    var exercises = await service.GetExercises();
+    var response = exercises.Select(exercise => new ExerciseListDto(
+        id: exercise.Id,
+        name: exercise.Name,
+        muscleGroup: exercise.MuscleGroup,
+        difficultyLevel: exercise.DifficultyLevel));
+
+    return Results.Ok(response);
 });
 
 app.MapGet("/api/exercises/{id}", async (string id, AppDbContext dbContext) =>
@@ -46,3 +53,10 @@ app.MapGet("/api/exercises/{id}", async (string id, AppDbContext dbContext) =>
 app.Run();
 
 public partial class Program { }
+
+record ExerciseListDto(
+    string id,
+    string name,
+    string muscleGroup,
+    string difficultyLevel
+);
