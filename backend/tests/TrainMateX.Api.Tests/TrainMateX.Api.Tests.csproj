@@ -27,4 +27,12 @@
     <ProjectReference Include="..\..\src\TrainMateX.Api\TrainMateX.Api.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="..\..\src\TrainMateX.Api\exercise-details-data.json">
+			<CopyToOutputDirectory>
+				PreserveNewest
+			</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>
