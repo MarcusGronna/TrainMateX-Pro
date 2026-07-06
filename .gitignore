@@ -94,3 +94,5 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
+# Local Codex working notes
+.codex/

@@ -1,39 +1,81 @@
-﻿namespace TrainMateX.Api.Tests;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace TrainMateX.Api.Tests;
+
+// TODO create AppDbContextFixture
 public class ExerciseTests
 {
-    [Fact]
-    public void GetExercises_ReturnsAllExercises()
+    private readonly AppDbContext _context;
+
+    public ExerciseTests()
     {
-        var exercises = Exercise.GetExercises();
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        _context = new AppDbContext(options);
+
+        _context.Exercises.AddRange(
+            new Exercise
+            {
+                Id = "bench-press",
+                Name = "Bench Press",
+                Description = "Chest exercise",
+                Instructions = ["Lie down", "Press bar"],
+                MuscleGroup = "Chest",
+                Equipment = "Barbell",
+                DifficultyLevel = "Medium"
+            },
+            new Exercise
+            {
+                Id = "squat",
+                Name = "Squat",
+                Description = "Leg exercise",
+                Instructions = ["Stand", "Squat down"],
+                MuscleGroup = "Legs",
+                Equipment = "Barbell",
+                DifficultyLevel = "Medium"
+            },
+            new Exercise
+            {
+                Id = "deadlift",
+                Name = "Deadlift",
+                Description = "Back exercise",
+                Instructions = ["Grip bar", "Lift"],
+                MuscleGroup = "Back",
+                Equipment = "Barbell",
+                DifficultyLevel = "Hard"
+            });
+
+        _context.SaveChanges();
+    }
+
+    [Fact]
+    public async Task GetExercises_ReturnsAllExercises()
+    {
+        var service = new ExerciseService(_context);
+        var exercises = await service.GetExercises();
 
         Assert.Equal(3, exercises.Count);
     }
-
-    // TODO: Implement test when Exercise has interface
-    //[Fact]
-    //public void GetExercises_WithNoDataSource_ReturnsNull()
-    //{
-    //    var exercises = Exercise.GetExercises();
-
-    //    Assert.Null(exercises);
-    //}
 
     [Theory]
     [InlineData("")]
     [InlineData("non-existant-id")]
     [InlineData("00000000-0000-0000-0000-000000000000")]
-    public void GetExerciseById_WithUnknownId_ReturnsNull(string id)
+    public async Task GetExerciseById_WithUnknownId_ReturnsNull(string id)
     {
-        var exercise = Exercise.GetExerciseById(id);
+        var service = new ExerciseService(_context);
+        var exercise = await service.GetExerciseById(id);
 
         Assert.Null(exercise);
     }
 
     [Fact]
-    public void GetExerciseById_ReturnsExercise()
+    public async Task GetExerciseById_ReturnsExercise()
     {
-        var exercise = Exercise.GetExerciseById("bench-press");
+        var service = new ExerciseService(_context);
+        var exercise = await service.GetExerciseById("bench-press");
 
         Assert.Equal("bench-press", exercise?.Id);
     }
