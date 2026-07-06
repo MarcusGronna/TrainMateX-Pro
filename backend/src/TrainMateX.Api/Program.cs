@@ -67,14 +67,14 @@ app.Run();
 
 public partial class Program { }
 
-record ExerciseListDto(
+public record ExerciseListDto(
     string id,
     string name,
     string muscleGroup,
     string difficultyLevel
 );
 
-record ExerciseDto(
+public record ExerciseDto(
     string id,
     string name,
     string description,
