@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TrainMateX.Api;
+using TrainMateX.Api.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,20 +67,3 @@ app.MapGet("/api/exercises/{id}", async (string id, AppDbContext dbContext) =>
 app.Run();
 
 public partial class Program { }
-
-public record ExerciseListDto(
-    string id,
-    string name,
-    string muscleGroup,
-    string difficultyLevel
-);
-
-public record ExerciseDto(
-    string id,
-    string name,
-    string description,
-    List<string> instructions,
-    string muscleGroup,
-    string equipment,
-    string difficultyLevel
-);
