@@ -1,8 +1,8 @@
-﻿namespace TrainMateX.Api.DTOs;
+﻿namespace TrainMateX.Api.Dtos;
 
 public record ExerciseListDto(
-    string id,
-    string name,
-    string muscleGroup,
-    string difficultyLevel
+    string Id,
+    string Name,
+    string MuscleGroup,
+    string DifficultyLevel
 );
