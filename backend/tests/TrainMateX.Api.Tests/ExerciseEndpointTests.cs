@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using TrainMateX.Api.DTOs;
+using TrainMateX.Api.Dtos;
 
 namespace TrainMateX.Api.Tests;
 
@@ -26,11 +26,11 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         Assert.NotNull(exercises);
         Assert.NotEmpty(exercises);
 
-        var benchPress = Assert.Single(exercises, exercise => exercise.id == "bench-press");
+        var benchPress = Assert.Single(exercises, exercise => exercise.Id == "bench-press");
 
-        Assert.Equal("Bench Press", benchPress.name);
-        Assert.Equal("Chest", benchPress.muscleGroup);
-        Assert.Equal("Intermediate", benchPress.difficultyLevel);
+        Assert.Equal("Bench Press", benchPress.Name);
+        Assert.Equal("Chest", benchPress.MuscleGroup);
+        Assert.Equal("Intermediate", benchPress.DifficultyLevel);
     }
 
     [Fact]
@@ -69,16 +69,16 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         var exercise = await response.Content.ReadFromJsonAsync<ExerciseDto>();
 
         Assert.NotNull(exercise);
-        Assert.Equal(id, exercise.id);
-        Assert.Equal("Bench Press", exercise.name);
+        Assert.Equal(id, exercise.Id);
+        Assert.Equal("Bench Press", exercise.Name);
 
-        Assert.False(string.IsNullOrWhiteSpace(exercise.description));
-        Assert.NotEmpty(exercise.instructions);
-        Assert.Equal("Chest", exercise.muscleGroup);
+        Assert.False(string.IsNullOrWhiteSpace(exercise.Description));
+        Assert.NotEmpty(exercise.Instructions);
+        Assert.Equal("Chest", exercise.MuscleGroup);
 
-        Assert.False(string.IsNullOrWhiteSpace(exercise.equipment));
+        Assert.False(string.IsNullOrWhiteSpace(exercise.Equipment));
 
-        Assert.Equal("Intermediate", exercise.difficultyLevel);
+        Assert.Equal("Intermediate", exercise.DifficultyLevel);
     }
 
     [Fact]
