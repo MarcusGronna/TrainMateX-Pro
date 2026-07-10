@@ -2,7 +2,7 @@
 
 namespace TrainMateX.Api;
 
-public class ExerciseValidation
+public static class ExerciseValidation
 {
     public static readonly string[] AllowedMuscleGroups =
     [
