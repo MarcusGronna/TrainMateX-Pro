@@ -1,6 +1,6 @@
 ﻿namespace TrainMateX.Api;
 
-public record ExerciseValidationResult
+public sealed record ExerciseValidationResult
 (
     bool IsValid,
     Dictionary<string, string[]> Errors,
