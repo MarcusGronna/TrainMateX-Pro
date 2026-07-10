@@ -1,17 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TrainMateX.Api;
+
+namespace TrainMateX.Api;
 
 public class ExerciseService(AppDbContext context)
 {
-    private AppDbContext _context = context;
+    private readonly AppDbContext _context = context;
 
     public async Task<Exercise?> GetExerciseById(string id)
     {
-        return await _context.Exercises.FirstOrDefaultAsync(e => e.Id == id);
+        return await _context.Exercises.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task<List<Exercise>> GetExercises()
     {
-        return await _context.Exercises.ToListAsync();
+        return await _context.Exercises.AsNoTracking().ToListAsync();
     }
 }
