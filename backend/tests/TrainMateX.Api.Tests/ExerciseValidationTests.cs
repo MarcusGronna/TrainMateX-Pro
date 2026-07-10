@@ -66,11 +66,9 @@ public class ExerciseValidationTests
     [Fact]
     public void Validate_ShouldReturnMuscleGroupError_WhenMuscleGroupIsInvalid()
     {
-        var request = CreateValidRequest(MuscleGroup:
-        "Neck");
+        var request = CreateValidRequest(MuscleGroup: "Neck");
 
-        var result =
-        ExerciseValidation.Validate(request);
+        var result = ExerciseValidation.Validate(request);
 
         Assert.False(result.IsValid);
         Assert.Contains("MuscleGroup",
@@ -80,11 +78,9 @@ public class ExerciseValidationTests
     [Fact]
     public void Validate_ShouldReturnEquipmentError_WhenEquipmentIsInvalid()
     {
-        var request = CreateValidRequest(Equipment:
-        "Stone");
+        var request = CreateValidRequest(Equipment: "Stone");
 
-        var result =
-        ExerciseValidation.Validate(request);
+        var result = ExerciseValidation.Validate(request);
 
         Assert.False(result.IsValid);
         Assert.Contains("Equipment", result.Errors.Keys);
@@ -93,24 +89,20 @@ public class ExerciseValidationTests
     [Fact]
     public void Validate_ShouldReturnDifficultyLevelError_WhenDifficultyLevelIsInvalid()
     {
-        var request = CreateValidRequest(DifficultyLevel:
-        "Impossible");
+        var request = CreateValidRequest(DifficultyLevel: "Impossible");
 
-        var result =
-        ExerciseValidation.Validate(request);
+        var result = ExerciseValidation.Validate(request);
 
         Assert.False(result.IsValid);
         Assert.Contains("DifficultyLevel",
         result.Errors.Keys);
     }
 
-
-
     private static SaveExerciseRequest CreateValidRequest(
 
         string Name = "Overhead Press",
         string Description = "A compound upper-body exercise",
-        List<string> Instructions = null,
+        List<string>? Instructions = null,
         string MuscleGroup = "Shoulders",
         string Equipment = "Barbell",
         string DifficultyLevel = "Intermediate")
@@ -122,8 +114,6 @@ public class ExerciseValidationTests
             MuscleGroup: MuscleGroup,
             Equipment: Equipment,
             DifficultyLevel: DifficultyLevel
-
         );
     }
-
 }
