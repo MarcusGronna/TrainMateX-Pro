@@ -57,13 +57,13 @@ public class ExerciseTests
         var service = new ExerciseService(_context);
         var exercises = await service.GetExercises();
 
-        Assert.Equal(3, exercises.Count);
+        Assert.Equal(_context.Exercises.Count(), exercises.Count);
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("non-existant-id")]
-    [InlineData("00000000-0000-0000-0000-000000000000")]
+    [InlineData("BENCH-PRESS")]
     public async Task GetExerciseById_WithUnknownId_ReturnsNull(string id)
     {
         var service = new ExerciseService(_context);
@@ -97,7 +97,6 @@ public class ExerciseTests
         var service = new ExerciseService(_context);
         var result = await service.CreateExercise(exerciseRequest);
         var exercise = await service.GetExerciseById("shoulder-press");
-
 
         Assert.NotNull(exercise);
         Assert.True(result.IsValid);
