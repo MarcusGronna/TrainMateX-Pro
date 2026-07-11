@@ -104,4 +104,27 @@ public class ExerciseTests
         Assert.Equal("Shoulder Press", exercise.Name);
         Assert.Equal("shoulder-press", exercise.Id);
     }
+
+    [Fact]
+    public async Task CreateExercise_WithInvalidData_ShouldReturnError()
+    {
+        var exerciseRequest = new SaveExerciseRequest
+        (
+            Name: "",
+            Description: "Shoulder exercise",
+            Instructions: ["Dumbbells by ear", "Push"],
+            MuscleGroup: "Shoulders",
+            Equipment: "Dumbbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var countBefore = _context.Exercises.Count();
+        var service = new ExerciseService(_context);
+        var result = await service.CreateExercise(exerciseRequest);
+        var exercise = await service.GetExerciseById("shoulder-press");
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Key == "Name");
+        Assert.Equal(countBefore, _context.Exercises.Count());
+    }
 }
