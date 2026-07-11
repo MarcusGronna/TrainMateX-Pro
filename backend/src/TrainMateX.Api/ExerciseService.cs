@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TrainMateX.Api.Dtos;
 
 namespace TrainMateX.Api;
 
@@ -14,5 +15,33 @@ public class ExerciseService(AppDbContext context)
     public async Task<List<Exercise>> GetExercises()
     {
         return await _context.Exercises.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<ExerciseValidationResult> CreateExercise(SaveExerciseRequest request)
+    {
+        var validatedResult = ExerciseValidation.Validate(request);
+
+        if (validatedResult.IsValid)
+        {
+            await _context.AddAsync(new Exercise
+            {
+                Id = GenerateSlug(request.Name),
+                Name = request.Name,
+                Description = request.Description,
+                Instructions = request.Instructions,
+                MuscleGroup = request.MuscleGroup,
+                Equipment = request.Equipment,
+                DifficultyLevel = request.DifficultyLevel
+            });
+
+            await _context.SaveChangesAsync();
+        }
+
+        return validatedResult;
+    }
+
+    private string GenerateSlug(string name)
+    {
+        return name.Trim().ToLower().Replace(' ', '-');
     }
 }
