@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TrainMateX.Api.Dtos;
 
 namespace TrainMateX.Api.Tests;
 
@@ -24,7 +25,7 @@ public class ExerciseTests
                 Instructions = ["Lie down", "Press bar"],
                 MuscleGroup = "Chest",
                 Equipment = "Barbell",
-                DifficultyLevel = "Medium"
+                DifficultyLevel = "Intermediate"
             },
             new Exercise
             {
@@ -34,7 +35,7 @@ public class ExerciseTests
                 Instructions = ["Stand", "Squat down"],
                 MuscleGroup = "Legs",
                 Equipment = "Barbell",
-                DifficultyLevel = "Medium"
+                DifficultyLevel = "Intermediate"
             },
             new Exercise
             {
@@ -44,7 +45,7 @@ public class ExerciseTests
                 Instructions = ["Grip bar", "Lift"],
                 MuscleGroup = "Back",
                 Equipment = "Barbell",
-                DifficultyLevel = "Hard"
+                DifficultyLevel = "Advanced"
             });
 
         _context.SaveChanges();
@@ -78,5 +79,29 @@ public class ExerciseTests
         var exercise = await service.GetExerciseById("bench-press");
 
         Assert.Equal("bench-press", exercise?.Id);
+    }
+
+    [Fact]
+    public async Task CreateExercise_WithValidData_ReturnsIsValidValidationResult()
+    {
+        var exerciseRequest = new SaveExerciseRequest
+        (
+            Name: "Shoulder Press",
+            Description: "Shoulder exercise",
+            Instructions: ["Dumbbells by ear", "Push"],
+            MuscleGroup: "Shoulders",
+            Equipment: "Dumbbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+        var result = await service.CreateExercise(exerciseRequest);
+        var exercise = await service.GetExerciseById("shoulder-press");
+
+
+        Assert.NotNull(exercise);
+        Assert.True(result.IsValid);
+        Assert.Equal("Shoulder Press", exercise.Name);
+        Assert.Equal("shoulder-press", exercise.Id);
     }
 }
