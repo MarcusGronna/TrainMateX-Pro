@@ -4,6 +4,8 @@ using TrainMateX.Api.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<ExerciseService>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -29,9 +31,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("AllowLocalhost3000");
 
-app.MapGet("/api/exercises", async (AppDbContext dbContext) =>
+app.MapGet("/api/exercises", async (ExerciseService service) =>
 {
-    var service = new ExerciseService(dbContext);
     var exercises = await service.GetExercises();
     var response = exercises.Select(exercise => new ExerciseListDto(
         Id: exercise.Id,
@@ -42,9 +43,8 @@ app.MapGet("/api/exercises", async (AppDbContext dbContext) =>
     return Results.Ok(response);
 });
 
-app.MapGet("/api/exercises/{id}", async (string id, AppDbContext dbContext) =>
+app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service) =>
 {
-    var service = new ExerciseService(dbContext);
     var exercise = await service.GetExerciseById(id);
 
     if (exercise is null)
