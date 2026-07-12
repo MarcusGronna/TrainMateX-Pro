@@ -37,7 +37,9 @@ public class ExerciseService(AppDbContext context)
             await _context.SaveChangesAsync();
         }
 
-        return validatedResult;
+    private async Task<bool> ExerciseAlreadyExistAsync(string id)
+    {
+        return await _context.Exercises.AnyAsync(e => e.Id == id);
     }
 
     private string GenerateSlug(string name)
