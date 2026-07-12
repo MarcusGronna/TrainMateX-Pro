@@ -21,21 +21,55 @@ public class ExerciseService(AppDbContext context)
     {
         var validatedResult = ExerciseValidation.Validate(request);
 
-        if (validatedResult.IsValid)
+        if (!validatedResult.IsValid)
         {
-            await _context.AddAsync(new Exercise
-            {
-                Id = GenerateSlug(request.Name),
-                Name = request.Name,
-                Description = request.Description,
-                Instructions = request.Instructions,
-                MuscleGroup = request.MuscleGroup,
-                Equipment = request.Equipment,
-                DifficultyLevel = request.DifficultyLevel
-            });
-
-            await _context.SaveChangesAsync();
+            return validatedResult;
         }
+
+        var id = GenerateSlug(request.Name);
+
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            var errors = new Dictionary<string, string[]>(validatedResult.Errors)
+            {
+                ["Name"] = ["Name produces an invalid id."]
+            };
+
+            return validatedResult with
+            {
+                IsValid = false,
+                Errors = errors
+            };
+        }
+
+        if (await ExerciseAlreadyExistAsync(id))
+        {
+            var errors = new Dictionary<string, string[]>(validatedResult.Errors)
+            {
+                ["Name"] = ["An exercise with this name already exists."]
+            };
+
+            return validatedResult with
+            {
+                IsValid = false,
+                Errors = errors
+            };
+        }
+
+        await _context.AddAsync(new Exercise
+        {
+            Id = id,
+            Name = request.Name,
+            Description = request.Description,
+            Instructions = validatedResult.NormalizedInstructions,
+            MuscleGroup = request.MuscleGroup,
+            Equipment = request.Equipment,
+            DifficultyLevel = request.DifficultyLevel
+        });
+
+        await _context.SaveChangesAsync();
+        return validatedResult;
+    }
 
     private async Task<bool> ExerciseAlreadyExistAsync(string id)
     {
