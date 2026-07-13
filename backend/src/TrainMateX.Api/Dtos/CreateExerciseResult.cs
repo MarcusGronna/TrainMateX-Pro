@@ -1,6 +1,6 @@
-﻿namespace TrainMateX.Api;
+﻿namespace TrainMateX.Api.Dtos;
 
-public sealed record CreateExerciseReslut
+public sealed record CreateExerciseResult
 (
     CreateExerciseResultType Type,
     Exercise? Exercise,
