@@ -7,17 +7,17 @@ public class ExerciseService(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<Exercise?> GetExerciseById(string id)
+    public async Task<Exercise?> GetExerciseByIdAsync(string id)
     {
         return await _context.Exercises.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<List<Exercise>> GetExercises()
+    public async Task<List<Exercise>> GetExercisesAsync()
     {
         return await _context.Exercises.AsNoTracking().ToListAsync();
     }
 
-    public async Task<ExerciseValidationResult> CreateExercise(SaveExerciseRequest request)
+    public async Task<CreateExerciseResult> CreateExerciseAsync(SaveExerciseRequest request)
     {
         var validatedResult = ExerciseValidation.Validate(request);
 
