@@ -33,7 +33,7 @@ app.UseCors("AllowLocalhost3000");
 
 app.MapGet("/api/exercises", async (ExerciseService service) =>
 {
-    var exercises = await service.GetExercises();
+    var exercises = await service.GetExercisesAsync();
     var response = exercises.Select(exercise => new ExerciseListDto(
         Id: exercise.Id,
         Name: exercise.Name,
@@ -45,7 +45,7 @@ app.MapGet("/api/exercises", async (ExerciseService service) =>
 
 app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service) =>
 {
-    var exercise = await service.GetExerciseById(id);
+    var exercise = await service.GetExerciseByIdAsync(id);
 
     if (exercise is null)
     {
