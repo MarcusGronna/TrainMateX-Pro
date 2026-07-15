@@ -23,7 +23,12 @@ public class ExerciseService(AppDbContext context)
 
         if (!validatedResult.IsValid)
         {
-            return validatedResult;
+            return new CreateExerciseResult
+                (
+                    Type: CreateExerciseResultType.ValidationFailed,
+                    Exercise: null,
+                    Errors: validatedResult.Errors
+                );
         }
 
         var id = GenerateSlug(request.Name);
@@ -35,11 +40,12 @@ public class ExerciseService(AppDbContext context)
                 ["Name"] = ["Name produces an invalid id."]
             };
 
-            return validatedResult with
-            {
-                IsValid = false,
-                Errors = errors
-            };
+            return new CreateExerciseResult
+                (
+                    Type: CreateExerciseResultType.ValidationFailed,
+                    Exercise: null,
+                    Errors: validatedResult.Errors
+                );
         }
 
         if (await ExerciseAlreadyExistAsync(id))
@@ -49,14 +55,15 @@ public class ExerciseService(AppDbContext context)
                 ["Name"] = ["An exercise with this name already exists."]
             };
 
-            return validatedResult with
-            {
-                IsValid = false,
-                Errors = errors
-            };
+            return new CreateExerciseResult
+                (
+                    Type: CreateExerciseResultType.Conflict,
+                    Exercise: null,
+                    Errors: validatedResult.Errors
+                );
         }
 
-        await _context.AddAsync(new Exercise
+        var exercise = new Exercise
         {
             Id = id,
             Name = request.Name,
@@ -65,10 +72,17 @@ public class ExerciseService(AppDbContext context)
             MuscleGroup = request.MuscleGroup,
             Equipment = request.Equipment,
             DifficultyLevel = request.DifficultyLevel
-        });
+        };
+
+        await _context.AddAsync(exercise);
 
         await _context.SaveChangesAsync();
-        return validatedResult;
+        return new CreateExerciseResult
+                (
+                    Type: CreateExerciseResultType.Created,
+                    Exercise: exercise,
+                    Errors: validatedResult.Errors
+                ); 
     }
 
     private async Task<bool> ExerciseAlreadyExistAsync(string id)
