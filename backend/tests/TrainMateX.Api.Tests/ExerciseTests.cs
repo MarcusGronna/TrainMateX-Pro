@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TrainMateX.Api.Dtos;
+using TrainMateX.Api;
 
 namespace TrainMateX.Api.Tests;
 
@@ -55,7 +56,7 @@ public class ExerciseTests
     public async Task GetExercises_ReturnsAllExercises()
     {
         var service = new ExerciseService(_context);
-        var exercises = await service.GetExercises();
+        var exercises = await service.GetExercisesAsync();
 
         Assert.Equal(_context.Exercises.Count(), exercises.Count);
     }
@@ -67,7 +68,7 @@ public class ExerciseTests
     public async Task GetExerciseById_WithUnknownId_ReturnsNull(string id)
     {
         var service = new ExerciseService(_context);
-        var exercise = await service.GetExerciseById(id);
+        var exercise = await service.GetExerciseByIdAsync(id);
 
         Assert.Null(exercise);
     }
@@ -76,13 +77,13 @@ public class ExerciseTests
     public async Task GetExerciseById_ReturnsExercise()
     {
         var service = new ExerciseService(_context);
-        var exercise = await service.GetExerciseById("bench-press");
+        var exercise = await service.GetExerciseByIdAsync("bench-press");
 
         Assert.Equal("bench-press", exercise?.Id);
     }
 
     [Fact]
-    public async Task CreateExercise_WithValidData_ReturnsIsValidValidationResult()
+    public async Task CreateExercise_WithValidData_Created()
     {
         var exerciseRequest = new SaveExerciseRequest
         (
@@ -95,11 +96,11 @@ public class ExerciseTests
         );
 
         var service = new ExerciseService(_context);
-        var result = await service.CreateExercise(exerciseRequest);
-        var exercise = await service.GetExerciseById("shoulder-press");
+        var result = await service.CreateExerciseAsync(exerciseRequest);
+        var exercise = await service.GetExerciseByIdAsync("shoulder-press");
 
         Assert.NotNull(exercise);
-        Assert.True(result.IsValid);
+        Assert.True(result.Type == CreateExerciseResultType.Created);
         Assert.Equal("Shoulder Press", exercise.Name);
         Assert.Equal("shoulder-press", exercise.Id);
     }
@@ -119,10 +120,10 @@ public class ExerciseTests
 
         var countBefore = _context.Exercises.Count();
         var service = new ExerciseService(_context);
-        var result = await service.CreateExercise(exerciseRequest);
-        var exercise = await service.GetExerciseById("shoulder-press");
+        var result = await service.CreateExerciseAsync(exerciseRequest);
+        var exercise = await service.GetExerciseByIdAsync("shoulder-press");
 
-        Assert.False(result.IsValid);
+        Assert.True(result.Type == CreateExerciseResultType.ValidationFailed);
         Assert.Contains(result.Errors, e => e.Key == "Name");
         Assert.Equal(countBefore, _context.Exercises.Count());
     }
