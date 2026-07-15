@@ -1,4 +1,4 @@
-﻿namespace TrainMateX.Api.Dtos;
+﻿namespace TrainMateX.Api;
 
 public sealed record CreateExerciseResult
 (
