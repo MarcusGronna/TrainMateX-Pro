@@ -44,7 +44,7 @@ public class ExerciseService(AppDbContext context)
                 (
                     Type: CreateExerciseResultType.ValidationFailed,
                     Exercise: null,
-                    Errors: validatedResult.Errors
+                    Errors: errors
                 );
         }
 
@@ -59,7 +59,7 @@ public class ExerciseService(AppDbContext context)
                 (
                     Type: CreateExerciseResultType.Conflict,
                     Exercise: null,
-                    Errors: validatedResult.Errors
+                    Errors: errors
                 );
         }
 
