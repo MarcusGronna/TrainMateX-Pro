@@ -127,4 +127,26 @@ public class ExerciseTests
         Assert.Contains(result.Errors, e => e.Key == "Name");
         Assert.Equal(countBefore, _context.Exercises.Count());
     }
+
+    [Fact]
+    public async Task CreateExercise_ShouldReturnErrors_WhenIdIsNull()
+    {
+        var exerciseRequest = new SaveExerciseRequest
+        (
+            Name: "!!!",
+            Description: "Shoulder exercise",
+            Instructions: ["Dumbbells by ear", "Push"],
+            MuscleGroup: "Shoulders",
+            Equipment: "Dumbbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+        var result = await service.CreateExerciseAsync(exerciseRequest);
+
+        Assert.True(result.Type == CreateExerciseResultType.ValidationFailed);
+        Assert.Contains(result.Errors, e => 
+            e.Key == "Name" &&
+            e.Value.SequenceEqual(["Name produces an invalid id."]));
+    }
 }
