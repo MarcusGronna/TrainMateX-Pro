@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using TrainMateX.Api.Dtos;
 
 namespace TrainMateX.Api;
@@ -92,6 +93,8 @@ public class ExerciseService(AppDbContext context)
 
     private string GenerateSlug(string name)
     {
-        return name.Trim().ToLower().Replace(' ', '-');
+        var slug = Regex.Replace(name.Trim().ToLowerInvariant(), @"[^a-z0-9\s-]", "");
+        slug = Regex.Replace(slug, @"\s+", "-").Trim('-');
+        return slug;
     }
 }
