@@ -149,4 +149,35 @@ public class ExerciseTests
             e.Key == "Name" &&
             e.Value.SequenceEqual(["Name produces an invalid id."]));
     }
+
+    [Fact]
+    public async Task CreateExerciseAsync_WhenGeneratedIdAlreadyExists_ReturnsConflictAndDoesNotPersist()
+    {
+        var request = new SaveExerciseRequest(
+            Name: "Bench Press",
+            Description: "Another description",
+            Instructions: ["Perform the exercise."],
+            MuscleGroup: "Chest",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+        var countBefore = await _context.Exercises.CountAsync();
+
+        var result = await service.CreateExerciseAsync(request);
+
+        var countAfter = await _context.Exercises.CountAsync();
+
+        Assert.Equal(CreateExerciseResultType.Conflict, result.Type);
+        Assert.Null(result.Exercise);
+
+        Assert.True(result.Errors.TryGetValue("Name", out var nameErrors));
+        Assert.Equal(
+            ["An exercise with this name already exists."],
+            nameErrors
+        );
+
+        Assert.Equal(countBefore, countAfter);
+    }
 }
