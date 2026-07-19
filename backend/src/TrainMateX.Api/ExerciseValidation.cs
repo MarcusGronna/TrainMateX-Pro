@@ -77,6 +77,7 @@ public static class ExerciseValidation
     public static List<string> NormalizeInstructions(List<string>? instructions)
     {
         return instructions?
+            .Where(instruction => !string.IsNullOrWhiteSpace(instruction))
             .Select(instruction => instruction.Trim())
             .Where(instruction => !string.IsNullOrWhiteSpace(instruction))
             .ToList() ?? [];
