@@ -40,7 +40,7 @@ public class ExerciseValidationTests
     [Fact]
     public void Validate_ShouldRemoveBlankInstructionRows()
     {
-        var request = CreateValidRequest(Instructions: [" Step one ", "", " ", " Step two"]);
+        var request = CreateValidRequest(Instructions: [" Step one ", "", " ", " Step two", null!]);
 
         var result = ExerciseValidation.Validate(request);
 
