@@ -180,4 +180,31 @@ public class ExerciseTests
 
         Assert.Equal(countBefore, countAfter);
     }
+
+    [Theory]
+    [InlineData("Overhead Press", "overhead-press")]
+    [InlineData("  Barbell   Press!  ", "barbell-press")]
+    [InlineData("Push/Pull", "push-pull")]
+    [InlineData("Push---Pull", "push-pull")]
+    public async Task CreateExerciseAsync_WithValidName_GeneratesExpectedSlug(
+      string name,
+      string expectedSlug)
+    {
+        var request = new SaveExerciseRequest(
+            Name: name,
+            Description: "Exercise description",
+            Instructions: ["Perform the exercise."],
+            MuscleGroup: "Shoulders",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+
+        var result = await service.CreateExerciseAsync(request);
+
+        Assert.Equal(CreateExerciseResultType.Created, result.Type);
+        Assert.NotNull(result.Exercise);
+        Assert.Equal(expectedSlug, result.Exercise.Id);
+    }
 }
