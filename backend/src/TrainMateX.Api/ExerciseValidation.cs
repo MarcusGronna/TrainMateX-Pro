@@ -79,7 +79,6 @@ public static class ExerciseValidation
         return instructions?
             .Where(instruction => !string.IsNullOrWhiteSpace(instruction))
             .Select(instruction => instruction.Trim())
-            .Where(instruction => !string.IsNullOrWhiteSpace(instruction))
             .ToList() ?? [];
     }
 }
