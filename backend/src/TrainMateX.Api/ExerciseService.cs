@@ -93,8 +93,12 @@ public class ExerciseService(AppDbContext context)
 
     private string GenerateSlug(string name)
     {
-        var slug = Regex.Replace(name.Trim().ToLowerInvariant(), @"[^a-z0-9\s-]", "");
-        slug = Regex.Replace(slug, @"\s+", "-").Trim('-');
-        return slug;
+        var slug = Regex.Replace(
+            name.Trim().ToLowerInvariant(), 
+            @"[^a-z0-9]+", 
+            "-"
+        );
+
+        return slug.Trim('-');
     }
 }
