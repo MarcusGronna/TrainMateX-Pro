@@ -53,7 +53,7 @@ public class ExerciseTests
     }
 
     [Fact]
-    public async Task GetExercises_ReturnsAllExercises()
+    public async Task GetExercisesAsync_ReturnsAllExercises()
     {
         var service = new ExerciseService(_context);
         var exercises = await service.GetExercisesAsync();
@@ -65,7 +65,7 @@ public class ExerciseTests
     [InlineData("")]
     [InlineData("non-existant-id")]
     [InlineData("BENCH-PRESS")]
-    public async Task GetExerciseById_WithUnknownId_ReturnsNull(string id)
+    public async Task GetExerciseByIdAsync_WithUnknownId_ReturnsNull(string id)
     {
         var service = new ExerciseService(_context);
         var exercise = await service.GetExerciseByIdAsync(id);
@@ -74,7 +74,7 @@ public class ExerciseTests
     }
 
     [Fact]
-    public async Task GetExerciseById_ReturnsExercise()
+    public async Task GetExerciseByIdAsync_ReturnsExercise()
     {
         var service = new ExerciseService(_context);
         var exercise = await service.GetExerciseByIdAsync("bench-press");
@@ -106,7 +106,7 @@ public class ExerciseTests
     }
 
     [Fact]
-    public async Task CreateExercise_WithInvalidData_ShouldReturnError()
+    public async Task CreateExerciseAsync_WithInvalidData_ShouldReturnError()
     {
         var exerciseRequest = new SaveExerciseRequest
         (
@@ -129,7 +129,7 @@ public class ExerciseTests
     }
 
     [Fact]
-    public async Task CreateExercise_ShouldReturnErrors_WhenIdIsNull()
+    public async Task CreateExerciseAsync_ShouldReturnErrors_WhenIdIsNull()
     {
         var exerciseRequest = new SaveExerciseRequest
         (
