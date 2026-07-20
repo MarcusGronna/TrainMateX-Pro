@@ -49,7 +49,7 @@ public class ExerciseService(AppDbContext context)
                 );
         }
 
-        if (await ExerciseAlreadyExistAsync(id))
+        if (await ExerciseExistAsync(id))
         {
             var errors = new Dictionary<string, string[]>(validatedResult.Errors)
             {
@@ -86,12 +86,12 @@ public class ExerciseService(AppDbContext context)
                 ); 
     }
 
-    private async Task<bool> ExerciseAlreadyExistAsync(string id)
+    private async Task<bool> ExerciseExistAsync(string id)
     {
         return await _context.Exercises.AnyAsync(e => e.Id == id);
     }
 
-    private string GenerateSlug(string name)
+    private static string GenerateSlug(string name)
     {
         var slug = Regex.Replace(
             name.Trim().ToLowerInvariant(), 
