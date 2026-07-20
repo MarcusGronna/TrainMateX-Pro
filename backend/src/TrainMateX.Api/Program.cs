@@ -64,6 +64,37 @@ app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service) =>
     return Results.Ok(response);
 });
 
+app.MapPost("/api/exercises", async (SaveExerciseRequest request, ExerciseService service) =>
+{
+    var result = await service.CreateExerciseAsync(request);
+
+    if (result.Type == CreateExerciseResultType.ValidationFailed)
+    {
+        return Results.ValidationProblem(result.Errors);
+    }
+
+    if (result.Type == CreateExerciseResultType.Conflict)
+    {
+        return Results.Conflict();
+    }
+
+    if (result.Type == CreateExerciseResultType.Created && result.Exercise is not null)
+    {
+        var response = new ExerciseDto(
+        Id: result.Exercise.Id,
+        Name: result.Exercise.Name,
+        Description: result.Exercise.Description,
+        Instructions: result.Exercise.Instructions,
+        MuscleGroup: result.Exercise.MuscleGroup,
+        Equipment: result.Exercise.Equipment,
+        DifficultyLevel: result.Exercise.DifficultyLevel);
+
+        return Results.Created($"/api/exercises/{response.Id}", response);
+    }
+
+    return Results.BadRequest();
+});
+
 app.Run();
 
 public partial class Program { }
