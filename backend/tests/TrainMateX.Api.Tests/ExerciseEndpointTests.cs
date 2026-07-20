@@ -89,4 +89,46 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    [Fact]
+    public async Task CreateExercise_ShouldReturn201_AndBeAvailableThroughGet()
+    {
+        var request = new SaveExerciseRequest(
+            Name: "Overhead Press Integration Test",
+            Description: "A compound upper-body exercise performed with a barbell.",
+            Instructions:
+            [
+                "Stand with the bar at shoulder height.",
+                 "Brace your core.",
+                 "Press the bar overhead until your arms are extended."
+            ],
+            MuscleGroup: "Shoulders",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate");
+
+
+        var postResponse = await _client.PostAsJsonAsync("/api/exercises", request);
+
+        Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+
+        var location = postResponse.Headers.Location;
+
+        Assert.NotNull(location);
+        Assert.Equal($"/api/exercises/overhead-press-integration-test", location.ToString());
+
+        var createdExercise = await postResponse.Content.ReadFromJsonAsync<ExerciseDto>();
+
+        Assert.NotNull(createdExercise);
+        Assert.Equal("overhead-press-integration-test", createdExercise.Id);
+
+        var getResponse = await _client.GetAsync(location);
+
+        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+
+        var fetchedExercise = await getResponse.Content.ReadFromJsonAsync<ExerciseDto>();
+
+        Assert.NotNull(fetchedExercise);
+        Assert.Equal(createdExercise.Id, fetchedExercise.Id);
+        Assert.Equal(request.Name, fetchedExercise.Name);
+    }
 }
