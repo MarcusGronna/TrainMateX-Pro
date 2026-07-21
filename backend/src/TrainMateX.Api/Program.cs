@@ -75,7 +75,7 @@ app.MapPost("/api/exercises", async (SaveExerciseRequest request, ExerciseServic
 
     if (result.Type == CreateExerciseResultType.Conflict)
     {
-        return Results.Conflict();
+        return Results.Conflict(result.Errors);
     }
 
     if (result.Type == CreateExerciseResultType.Created && result.Exercise is not null)
