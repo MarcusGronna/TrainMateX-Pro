@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TrainMateX.Api;
 using TrainMateX.Api.Dtos;
+using TrainMateX.Api.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,11 +35,7 @@ app.UseCors("AllowLocalhost3000");
 app.MapGet("/api/exercises", async (ExerciseService service) =>
 {
     var exercises = await service.GetExercisesAsync();
-    var response = exercises.Select(exercise => new ExerciseListDto(
-        Id: exercise.Id,
-        Name: exercise.Name,
-        MuscleGroup: exercise.MuscleGroup,
-        DifficultyLevel: exercise.DifficultyLevel));
+    var response = exercises.Select(exercise => exercise.ToListDto());
 
     return Results.Ok(response);
 });
@@ -52,16 +49,7 @@ app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service) =>
         return Results.NotFound();
     }
 
-    var response = new ExerciseDto(
-        Id: exercise.Id,
-        Name: exercise.Name,
-        Description: exercise.Description,
-        Instructions: exercise.Instructions,
-        MuscleGroup: exercise.MuscleGroup,
-        Equipment: exercise.Equipment,
-        DifficultyLevel: exercise.DifficultyLevel);
-
-    return Results.Ok(response);
+    return Results.Ok(exercise.ToDto());
 });
 
 app.MapPost("/api/exercises", async (SaveExerciseRequest request, ExerciseService service) =>
@@ -80,14 +68,7 @@ app.MapPost("/api/exercises", async (SaveExerciseRequest request, ExerciseServic
 
     if (result.Type == CreateExerciseResultType.Created && result.Exercise is not null)
     {
-        var response = new ExerciseDto(
-        Id: result.Exercise.Id,
-        Name: result.Exercise.Name,
-        Description: result.Exercise.Description,
-        Instructions: result.Exercise.Instructions,
-        MuscleGroup: result.Exercise.MuscleGroup,
-        Equipment: result.Exercise.Equipment,
-        DifficultyLevel: result.Exercise.DifficultyLevel);
+        var response = result.Exercise.ToDto();
 
         return Results.Created($"/api/exercises/{response.Id}", response);
     }
