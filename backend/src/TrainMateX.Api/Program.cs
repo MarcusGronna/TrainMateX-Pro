@@ -92,7 +92,7 @@ app.MapPost("/api/exercises", async (SaveExerciseRequest request, ExerciseServic
         return Results.Created($"/api/exercises/{response.Id}", response);
     }
 
-    return Results.BadRequest();
+    return Results.Problem();
 });
 
 app.Run();
