@@ -84,11 +84,11 @@ public class ExerciseService(AppDbContext context)
 
     private static string GenerateSlug(string name)
     {
+        var normalizedName = name.Trim().ToLowerInvariant();
         var slug = Regex.Replace(
-            name.Trim().ToLowerInvariant(), 
+            normalizedName,
             @"[^a-z0-9]+", 
-            "-"
-        );
+            "-");
 
         return slug.Trim('-');
     }
