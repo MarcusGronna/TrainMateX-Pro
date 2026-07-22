@@ -32,17 +32,17 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("AllowLocalhost3000");
 
-app.MapGet("/api/exercises", async (ExerciseService service) =>
+app.MapGet("/api/exercises", async (ExerciseService service, CancellationToken ct) =>
 {
-    var exercises = await service.GetExercisesAsync();
+    var exercises = await service.GetExercisesAsync(ct);
     var response = exercises.Select(exercise => exercise.ToListDto());
 
     return Results.Ok(response);
 });
 
-app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service) =>
+app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service, CancellationToken ct) =>
 {
-    var exercise = await service.GetExerciseByIdAsync(id);
+    var exercise = await service.GetExerciseByIdAsync(id, ct);
 
     if (exercise is null)
     {
@@ -52,9 +52,12 @@ app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service) =>
     return Results.Ok(exercise.ToDto());
 });
 
-app.MapPost("/api/exercises", async (SaveExerciseRequest request, ExerciseService service) =>
+app.MapPost("/api/exercises", async (
+    SaveExerciseRequest request, 
+    ExerciseService service, 
+    CancellationToken ct) =>
 {
-    var result = await service.CreateExerciseAsync(request);
+    var result = await service.CreateExerciseAsync(request, ct);
 
     if (result.Type == CreateExerciseResultType.ValidationFailed)
     {
