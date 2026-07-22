@@ -8,17 +8,25 @@ public class ExerciseService(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<Exercise?> GetExerciseByIdAsync(string id)
+    public async Task<Exercise?> GetExerciseByIdAsync(
+        string id,
+        CancellationToken ct = default)
     {
-        return await _context.Exercises.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+        return await _context.Exercises
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == id, ct);
     }
 
-    public async Task<List<Exercise>> GetExercisesAsync()
+    public async Task<List<Exercise>> GetExercisesAsync(CancellationToken ct = default)
     {
-        return await _context.Exercises.AsNoTracking().ToListAsync();
+        return await _context.Exercises
+            .AsNoTracking()
+            .ToListAsync(ct);
     }
 
-    public async Task<CreateExerciseResult> CreateExerciseAsync(SaveExerciseRequest request)
+    public async Task<CreateExerciseResult> CreateExerciseAsync(
+        SaveExerciseRequest request,
+        CancellationToken ct = default)
     {
         var validationResult = ExerciseValidation.Validate(request);
 
@@ -45,7 +53,7 @@ public class ExerciseService(AppDbContext context)
                     Errors: errors);
         }
 
-        if (await ExerciseExistAsync(id))
+        if (await ExerciseExistAsync(id, ct))
         {
             var errors = new Dictionary<string, string[]>(validationResult.Errors)
             {
@@ -69,7 +77,8 @@ public class ExerciseService(AppDbContext context)
             DifficultyLevel = request.DifficultyLevel
         };
 
-        await _context.AddAsync(exercise);
+        await _context.AddAsync(exercise, ct);
+        await _context.SaveChangesAsync(ct);
 
         return new CreateExerciseResult(
                     Type: CreateExerciseResultType.Created,
@@ -77,9 +86,12 @@ public class ExerciseService(AppDbContext context)
                     Errors: validationResult.Errors); 
     }
 
-    private async Task<bool> ExerciseExistAsync(string id)
+    private async Task<bool> ExerciseExistAsync(
+        string id,
+        CancellationToken ct)
     {
-        return await _context.Exercises.AnyAsync(e => e.Id == id);
+        return await _context.Exercises
+            .AnyAsync(e => e.Id == id, ct);
     }
 
     private static string GenerateSlug(string name)
