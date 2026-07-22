@@ -20,48 +20,42 @@ public class ExerciseService(AppDbContext context)
 
     public async Task<CreateExerciseResult> CreateExerciseAsync(SaveExerciseRequest request)
     {
-        var validatedResult = ExerciseValidation.Validate(request);
+        var validationResult = ExerciseValidation.Validate(request);
 
-        if (!validatedResult.IsValid)
+        if (!validationResult.IsValid)
         {
-            return new CreateExerciseResult
-                (
+            return new CreateExerciseResult(
                     Type: CreateExerciseResultType.ValidationFailed,
                     Exercise: null,
-                    Errors: validatedResult.Errors
-                );
+                    Errors: validationResult.Errors);
         }
 
         var id = GenerateSlug(request.Name);
 
         if (string.IsNullOrWhiteSpace(id))
         {
-            var errors = new Dictionary<string, string[]>(validatedResult.Errors)
+            var errors = new Dictionary<string, string[]>(validationResult.Errors)
             {
                 ["Name"] = ["Name produces an invalid id."]
             };
 
-            return new CreateExerciseResult
-                (
+            return new CreateExerciseResult(
                     Type: CreateExerciseResultType.ValidationFailed,
                     Exercise: null,
-                    Errors: errors
-                );
+                    Errors: errors);
         }
 
         if (await ExerciseExistAsync(id))
         {
-            var errors = new Dictionary<string, string[]>(validatedResult.Errors)
+            var errors = new Dictionary<string, string[]>(validationResult.Errors)
             {
                 ["Name"] = ["An exercise with this name already exists."]
             };
 
-            return new CreateExerciseResult
-                (
+            return new CreateExerciseResult(
                     Type: CreateExerciseResultType.Conflict,
                     Exercise: null,
-                    Errors: errors
-                );
+                    Errors: errors);
         }
 
         var exercise = new Exercise
@@ -69,7 +63,7 @@ public class ExerciseService(AppDbContext context)
             Id = id,
             Name = request.Name,
             Description = request.Description,
-            Instructions = validatedResult.NormalizedInstructions,
+            Instructions = validationResult.NormalizedInstructions,
             MuscleGroup = request.MuscleGroup,
             Equipment = request.Equipment,
             DifficultyLevel = request.DifficultyLevel
@@ -77,13 +71,10 @@ public class ExerciseService(AppDbContext context)
 
         await _context.AddAsync(exercise);
 
-        await _context.SaveChangesAsync();
-        return new CreateExerciseResult
-                (
+        return new CreateExerciseResult(
                     Type: CreateExerciseResultType.Created,
                     Exercise: exercise,
-                    Errors: validatedResult.Errors
-                ); 
+                    Errors: validationResult.Errors); 
     }
 
     private async Task<bool> ExerciseExistAsync(string id)
