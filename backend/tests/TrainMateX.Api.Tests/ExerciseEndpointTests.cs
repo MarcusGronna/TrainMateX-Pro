@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Http;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using TrainMateX.Api.Dtos;
@@ -130,5 +131,29 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         Assert.NotNull(fetchedExercise);
         Assert.Equal(createdExercise.Id, fetchedExercise.Id);
         Assert.Equal(request.Name, fetchedExercise.Name);
+    }
+
+    [Fact]
+    public async Task CreateExercise_ShouldReturn400_WhenValidationFails()
+    {
+        var request = new SaveExerciseRequest(
+            Name: "",
+            Description: "A compound upper-body exercise performed with a barbell.",
+            Instructions: [],
+            MuscleGroup: "Shoulders",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate");
+
+        var response = await _client.PostAsJsonAsync("/api/exercises", request);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var validationProblem = await response.Content
+            .ReadFromJsonAsync<HttpValidationProblemDetails>();
+
+        Assert.NotNull(validationProblem);
+
+        Assert.Contains("Name", validationProblem.Errors.Keys);
+        Assert.Contains("Name is required.", validationProblem.Errors["Name"]);
     }
 }
