@@ -1,35 +1,39 @@
-﻿using TrainMateX.Api.Dtos;
+﻿using System.Collections.Frozen;
+using TrainMateX.Api.Dtos;
 
 namespace TrainMateX.Api;
 
 public static class ExerciseValidation
 {
-    public static readonly string[] AllowedMuscleGroups =
-    [
-        "Chest",
-        "Back",
-        "Legs",
-        "Shoulders",
-        "Arms",
-        "Core"
-    ];
+    private static readonly FrozenSet<string> AllowedMuscleGroups =
+        new[]
+        {
+            "Chest",
+            "Back",
+            "Legs",
+            "Shoulders",
+            "Arms",
+            "Core"
+        }.ToFrozenSet(StringComparer.Ordinal);
 
-    public static readonly string[] AllowedEquipment =
-    [
-        "Barbell",
-        "Dumbbell",
-        "Bodyweight",
-        "Machine",
-        "Cable",
-        "Kettlebell"
-    ];
+    private static readonly FrozenSet<string> AllowedEquipment =
+        new[]
+        {
+            "Barbell",
+            "Dumbbell",
+            "Bodyweight",
+            "Machine",
+            "Cable",
+            "Kettlebell"
+        }.ToFrozenSet(StringComparer.Ordinal);
 
-    public static readonly string[] AllowedDifficultyLevels =
-    [
-        "Beginner",
-        "Intermediate",
-        "Advanced"
-    ];
+    private static readonly FrozenSet<string> AllowedDifficultyLevels =
+        new[]
+        {
+            "Beginner",
+            "Intermediate",
+            "Advanced"
+        }.ToFrozenSet(StringComparer.Ordinal);
 
     public static ExerciseValidationResult Validate(SaveExerciseRequest request)
     {
