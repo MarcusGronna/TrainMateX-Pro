@@ -156,4 +156,27 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         Assert.Contains("Name", validationProblem.Errors.Keys);
         Assert.Contains("Name is required.", validationProblem.Errors["Name"]);
     }
+
+    [Fact]
+    public async Task CreateExercise_ShouldReturn409_WhenConflictingName()
+    {
+        var request = new SaveExerciseRequest(
+            Name: "Bench Press",
+            Description: "A compound upper-body exercise performed with a barbell.",
+            Instructions: ["Lie on the bench with your eyes under the bar."],
+            MuscleGroup: "Chest",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate");
+
+        var response = await _client.PostAsJsonAsync("/api/exercises", request);
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+
+        var errors = await response.Content
+            .ReadFromJsonAsync<Dictionary<string, string[]>>();
+
+        Assert.NotNull(errors);
+        Assert.Contains("Name", errors.Keys);
+        Assert.Contains("An exercise with this name already exists.", errors["Name"]);
+    }
 }
