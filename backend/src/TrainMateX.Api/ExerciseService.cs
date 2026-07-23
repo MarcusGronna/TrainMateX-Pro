@@ -77,7 +77,7 @@ public class ExerciseService(AppDbContext context)
             DifficultyLevel = request.DifficultyLevel
         };
 
-        await _context.AddAsync(exercise, ct);
+        _context.Exercises.Add(exercise);
         await _context.SaveChangesAsync(ct);
 
         return new CreateExerciseResult(
