@@ -179,4 +179,29 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         Assert.Contains("Name", errors.Keys);
         Assert.Contains("An exercise with this name already exists.", errors["Name"]);
     }
+
+    [Fact]
+    public async Task CreateExercise_ShouldReturn400_WhenDifficultyLevelIsInvalid()
+    {
+        var request = new SaveExerciseRequest(
+            Name: "Invalid Difficulty Integration Test",
+            Description: "A request with an invalid difficulty level.",
+            Instructions: ["Perform the exercise."],
+            MuscleGroup: "Shoulders",
+            Equipment: "Barbell",
+            DifficultyLevel: "Impossible");
+
+        var response = await _client.PostAsJsonAsync("/api/exercises", request);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var validationProblem = await response.Content
+            .ReadFromJsonAsync<HttpValidationProblemDetails>();
+
+        Assert.NotNull(validationProblem);
+        Assert.Contains("DifficultyLevel", validationProblem.Errors.Keys);
+        Assert.Contains(
+            "Difficulty level is invalid.",
+            validationProblem.Errors["DifficultyLevel"]);
+    }
 }
