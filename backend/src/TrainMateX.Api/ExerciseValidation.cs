@@ -1,5 +1,6 @@
 ﻿using System.Collections.Frozen;
 using TrainMateX.Api.Dtos;
+using TrainMateX.Api.Results;
 
 namespace TrainMateX.Api;
 
@@ -74,8 +75,7 @@ public static class ExerciseValidation
         return new ExerciseValidationResult(
             IsValid: errors.Count == 0,
             Errors: errors,
-            NormalizedInstructions: normalizedInstructions
-        );
+            NormalizedInstructions: normalizedInstructions);
     }
 
     public static List<string> NormalizeInstructions(List<string>? instructions)

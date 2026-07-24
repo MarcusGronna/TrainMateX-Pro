@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using TrainMateX.Api.Dtos;
+using TrainMateX.Api.Results;
 
 namespace TrainMateX.Api;
 
@@ -53,7 +54,7 @@ public class ExerciseService(AppDbContext context)
                     Errors: errors);
         }
 
-        if (await ExerciseExistAsync(id, ct))
+        if (await ExerciseExistsAsync(id, ct))
         {
             var errors = new Dictionary<string, string[]>(validationResult.Errors)
             {
@@ -86,7 +87,7 @@ public class ExerciseService(AppDbContext context)
                     Errors: validationResult.Errors); 
     }
 
-    private async Task<bool> ExerciseExistAsync(
+    private async Task<bool> ExerciseExistsAsync(
         string id,
         CancellationToken ct)
     {
