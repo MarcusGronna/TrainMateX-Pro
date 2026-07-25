@@ -53,30 +53,25 @@ app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service, Can
 });
 
 app.MapPost("/api/exercises", async (
-    SaveExerciseRequest request, 
-    ExerciseService service, 
+    SaveExerciseRequest request,
+    ExerciseService service,
     CancellationToken ct) =>
 {
     var result = await service.CreateExerciseAsync(request, ct);
 
-    if (result.Type == CreateExerciseResultType.ValidationFailed)
+    return result.Type switch
     {
-        return Results.ValidationProblem(result.Errors);
-    }
+        CreateExerciseResultType.ValidationFailed =>
+            Results.ValidationProblem(result.Errors),
 
-    if (result.Type == CreateExerciseResultType.Conflict)
-    {
-        return Results.Conflict(result.Errors);
-    }
+        CreateExerciseResultType.Conflict =>
+            Results.Conflict(result.Errors),
 
-    if (result.Type == CreateExerciseResultType.Created && result.Exercise is not null)
-    {
-        var response = result.Exercise.ToDto();
+        CreateExerciseResultType.Created when result.Exercise is not null =>
+            Results.Created($"/api/exercises/{result.Exercise.Id}", result.Exercise.ToDto()),
 
-        return Results.Created($"/api/exercises/{response.Id}", response);
-    }
-
-    return Results.Problem();
+        _ => Results.Problem()
+    };
 });
 
 app.Run();
