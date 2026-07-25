@@ -69,6 +69,24 @@ app.MapPost("/api/exercises", async (
 
         CreateExerciseResultType.Created when result.Exercise is not null =>
             Results.Created($"/api/exercises/{result.Exercise.Id}", result.Exercise.ToDto()),
+app.MapPut("/api/exercises/{id}", async (
+    string id,
+    SaveExerciseRequest request,
+    ExerciseService service,
+    CancellationToken ct) =>
+{
+    var result = await service.UpdateExerciseAsync(id, request, ct);
+
+    return result.Type switch
+    {
+        UpdateExerciseResultType.NotFound =>
+            Results.NotFound(),
+
+        UpdateExerciseResultType.ValidationFailed =>
+            Results.ValidationProblem(result.Errors),
+
+        UpdateExerciseResultType.Updated when result.Exercise is { } exercise =>
+            Results.Ok(exercise.ToDto()),
 
         _ => Results.Problem()
     };
