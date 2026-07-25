@@ -84,7 +84,48 @@ public class ExerciseService(AppDbContext context)
         return new CreateExerciseResult(
                     Type: CreateExerciseResultType.Created,
                     Exercise: exercise,
-                    Errors: validationResult.Errors); 
+                    Errors: validationResult.Errors);
+    }
+
+    public async Task<UpdateExerciseResult> UpdateExerciseAsync(
+        string id,
+        SaveExerciseRequest request,
+        CancellationToken ct = default)
+    {
+        var validationResult = ExerciseValidation.Validate(request);
+
+        if (!validationResult.IsValid)
+        {
+            return new UpdateExerciseResult(
+                    Type: UpdateExerciseResultType.ValidationFailed,
+                    Exercise: null,
+                    Errors: validationResult.Errors);
+        }
+
+        var exercise = await _context.Exercises
+            .FirstOrDefaultAsync(exercise => exercise.Id == id, ct);
+
+        if (exercise is null)
+        {
+            return new UpdateExerciseResult(
+                    Type: UpdateExerciseResultType.NotFound,
+                    Exercise: null,
+                    Errors: validationResult.Errors);
+        }
+
+        exercise.Name = request.Name;
+        exercise.Description = request.Description;
+        exercise.Instructions = validationResult.NormalizedInstructions;
+        exercise.MuscleGroup = request.MuscleGroup;
+        exercise.Equipment = request.Equipment;
+        exercise.DifficultyLevel = request.DifficultyLevel;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UpdateExerciseResult(
+                    Type: UpdateExerciseResultType.Updated,
+                    Exercise: exercise,
+                    Errors: validationResult.Errors);
     }
 
     private async Task<bool> ExerciseExistsAsync(
@@ -100,7 +141,7 @@ public class ExerciseService(AppDbContext context)
         var normalizedName = name.Trim().ToLowerInvariant();
         var slug = Regex.Replace(
             normalizedName,
-            @"[^a-z0-9]+", 
+            @"[^a-z0-9]+",
             "-");
 
         return slug.Trim('-');
