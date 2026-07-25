@@ -32,7 +32,9 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("AllowLocalhost3000");
 
-app.MapGet("/api/exercises", async (ExerciseService service, CancellationToken ct) =>
+app.MapGet("/api/exercises", async (
+    ExerciseService service,
+    CancellationToken ct) =>
 {
     var exercises = await service.GetExercisesAsync(ct);
     var response = exercises.Select(exercise => exercise.ToListDto());
@@ -40,7 +42,10 @@ app.MapGet("/api/exercises", async (ExerciseService service, CancellationToken c
     return Results.Ok(response);
 });
 
-app.MapGet("/api/exercises/{id}", async (string id, ExerciseService service, CancellationToken ct) =>
+app.MapGet("/api/exercises/{id}", async (
+    string id,
+    ExerciseService service,
+    CancellationToken ct) =>
 {
     var exercise = await service.GetExerciseByIdAsync(id, ct);
 
