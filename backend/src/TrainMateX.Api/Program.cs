@@ -67,8 +67,13 @@ app.MapPost("/api/exercises", async (
         CreateExerciseResultType.Conflict =>
             Results.Conflict(result.Errors),
 
-        CreateExerciseResultType.Created when result.Exercise is not null =>
-            Results.Created($"/api/exercises/{result.Exercise.Id}", result.Exercise.ToDto()),
+        CreateExerciseResultType.Created when result.Exercise is { } exercise =>
+            Results.Created($"/api/exercises/{exercise.Id}", exercise.ToDto()),
+
+        _ => Results.Problem()
+    };
+});
+
 app.MapPut("/api/exercises/{id}", async (
     string id,
     SaveExerciseRequest request,
