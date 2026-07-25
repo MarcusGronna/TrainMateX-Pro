@@ -286,4 +286,23 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         Assert.Contains("Name", validationProblem.Errors.Keys);
         Assert.Contains("Instructions", validationProblem.Errors.Keys);
     }
+
+    [Fact]
+    public async Task UpdateExercise_ShouldReturn404_WhenExerciseIsMissing()
+    {
+        await _factory.ResetDatabaseAsync();
+
+        var request = new SaveExerciseRequest(
+            Name: "Updated Missing Exercise",
+            Description: "An updated exercise description.",
+            Instructions: ["Perform the exercise."],
+            MuscleGroup: "Chest",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate");
+
+        var response = await _client.PutAsJsonAsync("/api/exercises/missing-exercise", request);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
 }
