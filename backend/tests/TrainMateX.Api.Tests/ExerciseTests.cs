@@ -268,4 +268,24 @@ public class ExerciseTests
         Assert.NotNull(persistedExercise);
         Assert.Equal("Bench Press", persistedExercise.Name);
     }
+
+    [Fact]
+    public async Task UpdateExerciseAsync_WithUnknownId_ReturnsNotFound()
+    {
+        var request = new SaveExerciseRequest(
+            Name: "Updated Exercise",
+            Description: "Updated exercise description",
+            Instructions: ["Perform the exercise."],
+            MuscleGroup: "Chest",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+
+        var result = await service.UpdateExerciseAsync("missing-exercise", request, default);
+
+        Assert.Equal(UpdateExerciseResultType.NotFound, result.Type);
+        Assert.Null(result.Exercise);
+    }
 }
