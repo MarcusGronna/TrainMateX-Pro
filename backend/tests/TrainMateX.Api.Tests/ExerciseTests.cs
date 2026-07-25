@@ -206,4 +206,39 @@ public class ExerciseTests
         Assert.NotNull(result.Exercise);
         Assert.Equal(expectedSlug, result.Exercise.Id);
     }
+
+    [Fact]
+    public async Task UpdateExerciseAsync_WithValidData_UpdatesExerciseAndPreservesId()
+    {
+        const string originalId = "bench-press";
+
+        var request = new SaveExerciseRequest(
+            Name: "Updated Bench Press",
+            Description: "Updated chest exercise",
+            Instructions: ["Lie down", "Press the bar upward"],
+            MuscleGroup: "Chest",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+
+        var result = await service.UpdateExerciseAsync(originalId, request, default);
+
+        Assert.Equal(UpdateExerciseResultType.Updated, result.Type);
+        Assert.NotNull(result.Exercise);
+        Assert.Equal(originalId, result.Exercise.Id);
+        Assert.Equal("Updated Bench Press", result.Exercise.Name);
+
+        _context.ChangeTracker.Clear();
+
+        var persistedExercise = await _context.Exercises.FindAsync(originalId);
+        Assert.NotNull(persistedExercise);
+        Assert.Equal("Updated Bench Press", persistedExercise.Name);
+        Assert.Equal("Updated chest exercise", persistedExercise.Description);
+        Assert.Equal(["Lie down", "Press the bar upward"], persistedExercise.Instructions);
+        Assert.Equal("Chest", persistedExercise.MuscleGroup);
+        Assert.Equal("Barbell", persistedExercise.Equipment);
+        Assert.Equal("Intermediate", persistedExercise.DifficultyLevel);
+    }
 }
