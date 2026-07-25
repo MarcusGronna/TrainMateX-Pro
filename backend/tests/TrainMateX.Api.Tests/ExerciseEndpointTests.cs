@@ -222,4 +222,43 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
             "Difficulty level is invalid.",
             validationProblem.Errors["DifficultyLevel"]);
     }
+
+    [Fact]
+    public async Task UpdateExercise_ShouldReturn200WithUpdatedExercise()
+    {
+        await _factory.ResetDatabaseAsync();
+
+        var request = new SaveExerciseRequest(
+            Name: "Updated Squat",
+            Description: "An updated lower-body exercise.",
+            Instructions: ["Stand with the bar.", "Squat down.", "Stand back up."],
+            MuscleGroup: "Legs",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate");
+
+        var response = await _client.PutAsJsonAsync("/api/exercises/squat", request);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var updatedExercise = await response.Content.ReadFromJsonAsync<ExerciseDto>();
+
+        Assert.NotNull(updatedExercise);
+        Assert.Equal("squat", updatedExercise.Id);
+        Assert.Equal(request.Name, updatedExercise.Name);
+        Assert.Equal(request.Description, updatedExercise.Description);
+
+        var getResponse = await _client.GetAsync("/api/exercises/squat");
+        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+
+        var persistedExercise =
+            await getResponse.Content.ReadFromJsonAsync<ExerciseDto>();
+
+        Assert.NotNull(persistedExercise);
+        Assert.Equal(request.Name, persistedExercise.Name);
+        Assert.Equal(request.Description, persistedExercise.Description);
+        Assert.Equal(request.Instructions, persistedExercise.Instructions);
+        Assert.Equal(request.MuscleGroup, persistedExercise.MuscleGroup);
+        Assert.Equal(request.Equipment, persistedExercise.Equipment);
+        Assert.Equal(request.DifficultyLevel, persistedExercise.DifficultyLevel);
+    }
 }
