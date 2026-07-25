@@ -24,4 +24,16 @@ public class TrainMateXApiFactory : WebApplicationFactory<Program>
             });
         });
     }
+
+    public async Task ResetDatabaseAsync()
+    {
+        await using var scope = Services.CreateAsyncScope();
+
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        await db.Database.EnsureDeletedAsync();
+        await db.Database.EnsureCreatedAsync();
+
+        await ExerciseSeeder.SeedAsync(db);
+    }
 }
