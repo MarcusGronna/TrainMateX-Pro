@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TrainMateX.Api.Dtos;
-using TrainMateX.Api;
 
 namespace TrainMateX.Api.Tests;
 
@@ -100,7 +99,7 @@ public class ExerciseTests
         var exercise = await service.GetExerciseByIdAsync("shoulder-press");
 
         Assert.NotNull(exercise);
-        Assert.True(result.Type == CreateExerciseResultType.Created);
+        Assert.Equal(CreateExerciseResultType.Created, result.Type);
         Assert.Equal("Shoulder Press", exercise.Name);
         Assert.Equal("shoulder-press", exercise.Id);
     }
@@ -123,7 +122,7 @@ public class ExerciseTests
         var result = await service.CreateExerciseAsync(exerciseRequest);
         var exercise = await service.GetExerciseByIdAsync("shoulder-press");
 
-        Assert.True(result.Type == CreateExerciseResultType.ValidationFailed);
+        Assert.Equal(CreateExerciseResultType.ValidationFailed, result.Type);
         Assert.Contains(result.Errors, e => e.Key == "Name");
         Assert.Equal(countBefore, _context.Exercises.Count());
     }
@@ -144,7 +143,7 @@ public class ExerciseTests
         var service = new ExerciseService(_context);
         var result = await service.CreateExerciseAsync(exerciseRequest);
 
-        Assert.True(result.Type == CreateExerciseResultType.ValidationFailed);
+        Assert.Equal(CreateExerciseResultType.ValidationFailed, result.Type);
         Assert.Contains(result.Errors, e => 
             e.Key == "Name" &&
             e.Value.SequenceEqual(["Name produces an invalid id."]));
