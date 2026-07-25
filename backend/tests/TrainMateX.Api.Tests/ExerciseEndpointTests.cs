@@ -261,4 +261,29 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         Assert.Equal(request.Equipment, persistedExercise.Equipment);
         Assert.Equal(request.DifficultyLevel, persistedExercise.DifficultyLevel);
     }
+
+    [Fact]
+    public async Task UpdateExercise_ShouldReturn400_WhenValidationFails()
+    {
+        await _factory.ResetDatabaseAsync();
+
+        var request = new SaveExerciseRequest(
+            Name: "",
+            Description: "An updated lower-body exercise.",
+            Instructions: [],
+            MuscleGroup: "Legs",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate");
+
+        var response = await _client.PutAsJsonAsync("/api/exercises/squat", request);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var validationProblem = await response.Content
+            .ReadFromJsonAsync<HttpValidationProblemDetails>();
+
+        Assert.NotNull(validationProblem);
+        Assert.Contains("Name", validationProblem.Errors.Keys);
+        Assert.Contains("Instructions", validationProblem.Errors.Keys);
+    }
 }
