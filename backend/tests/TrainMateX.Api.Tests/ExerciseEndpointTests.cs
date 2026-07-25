@@ -8,16 +8,20 @@ namespace TrainMateX.Api.Tests;
 
 public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
 {
+    private readonly TrainMateXApiFactory _factory;
     private readonly HttpClient _client;
 
     public ExerciseEndpointTests(TrainMateXApiFactory factory)
     {
+        _factory = factory;
         _client = factory.CreateClient();
     }
 
     [Fact]
     public async Task GetExercises_ShouldReturnExerciseList()
     {
+        await _factory.ResetDatabaseAsync();
+
         var response = await _client.GetAsync("/api/exercises");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -37,6 +41,8 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
     [Fact]
     public async Task GetExercises_ShouldReturnOnlyListFields()
     {
+        await _factory.ResetDatabaseAsync();
+
         var response = await _client.GetAsync("/api/exercises");
 
         response.EnsureSuccessStatusCode();
@@ -61,6 +67,8 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
     [Fact]
     public async Task GetExerciseById_ShouldReturnExerciseDetails_WhenExerciseExists()
     {
+        await _factory.ResetDatabaseAsync();
+
         var id = "bench-press";
 
         var response = await _client.GetAsync($"/api/exercises/{id}");
@@ -85,6 +93,8 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
     [Fact]
     public async Task GetExerciseById_ShouldReturn404NotFound_WhenExerciseMissing()
     {
+        await _factory.ResetDatabaseAsync();
+
         var id = "missing-exercise";
         var response = await _client.GetAsync($"/api/exercises/{id}");
 
@@ -94,6 +104,8 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
     [Fact]
     public async Task CreateExercise_ShouldReturn201_AndBeAvailableThroughGet()
     {
+        await _factory.ResetDatabaseAsync();
+
         var request = new SaveExerciseRequest(
             Name: "Overhead Press Integration Test",
             Description: "A compound upper-body exercise performed with a barbell.",
@@ -136,6 +148,8 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
     [Fact]
     public async Task CreateExercise_ShouldReturn400_WhenValidationFails()
     {
+        await _factory.ResetDatabaseAsync();
+
         var request = new SaveExerciseRequest(
             Name: "",
             Description: "A compound upper-body exercise performed with a barbell.",
@@ -160,6 +174,8 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
     [Fact]
     public async Task CreateExercise_ShouldReturn409_WhenConflictingName()
     {
+        await _factory.ResetDatabaseAsync();
+
         var request = new SaveExerciseRequest(
             Name: "Bench Press",
             Description: "A compound upper-body exercise performed with a barbell.",
@@ -183,6 +199,8 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
     [Fact]
     public async Task CreateExercise_ShouldReturn400_WhenDifficultyLevelIsInvalid()
     {
+        await _factory.ResetDatabaseAsync();
+
         var request = new SaveExerciseRequest(
             Name: "Invalid Difficulty Integration Test",
             Description: "A request with an invalid difficulty level.",
