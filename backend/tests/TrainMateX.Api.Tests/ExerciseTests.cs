@@ -144,7 +144,7 @@ public class ExerciseTests
         var result = await service.CreateExerciseAsync(exerciseRequest);
 
         Assert.Equal(CreateExerciseResultType.ValidationFailed, result.Type);
-        Assert.Contains(result.Errors, e => 
+        Assert.Contains(result.Errors, e =>
             e.Key == "Name" &&
             e.Value.SequenceEqual(["Name produces an invalid id."]));
     }
@@ -287,5 +287,33 @@ public class ExerciseTests
 
         Assert.Equal(UpdateExerciseResultType.NotFound, result.Type);
         Assert.Null(result.Exercise);
+    }
+
+    [Fact]
+    public async Task UpdateExerciseAsync_NormalizesInstructionsBeforePersisting()
+    {
+        const string originalId = "bench-press";
+
+        var request = new SaveExerciseRequest(
+            Name: "Updated Bench Press",
+            Description: "Updated chest exercise",
+            Instructions: [" Step one ", "", " ", " Step two "],
+            MuscleGroup: "Chest",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+
+        var result = await service.UpdateExerciseAsync(originalId, request, default);
+
+        Assert.Equal(UpdateExerciseResultType.Updated, result.Type);
+
+        _context.ChangeTracker.Clear();
+
+        var persistedExercise = await _context.Exercises.FindAsync(originalId);
+
+        Assert.NotNull(persistedExercise);
+        Assert.Equal(["Step one", "Step two"], persistedExercise.Instructions);
     }
 }
