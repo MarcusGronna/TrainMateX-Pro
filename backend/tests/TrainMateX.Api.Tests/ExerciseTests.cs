@@ -241,4 +241,31 @@ public class ExerciseTests
         Assert.Equal("Barbell", persistedExercise.Equipment);
         Assert.Equal("Intermediate", persistedExercise.DifficultyLevel);
     }
+
+    [Fact]
+    public async Task UpdateExerciseAsync_WithInvalidData_ReturnsValidationFailedAndDoesNotPersist()
+    {
+        var request = new SaveExerciseRequest(
+            Name: "",
+            Description: "Updated chest exercise",
+            Instructions: ["Lie down", "Press the bar upward"],
+            MuscleGroup: "Chest",
+            Equipment: "Barbell",
+            DifficultyLevel: "Intermediate"
+        );
+
+        var service = new ExerciseService(_context);
+
+        var result = await service.UpdateExerciseAsync("bench-press", request, default);
+
+        Assert.Equal(UpdateExerciseResultType.ValidationFailed, result.Type);
+        Assert.Null(result.Exercise);
+        Assert.Contains("Name", result.Errors.Keys);
+
+        _context.ChangeTracker.Clear();
+
+        var persistedExercise = await _context.Exercises.FindAsync("bench-press");
+        Assert.NotNull(persistedExercise);
+        Assert.Equal("Bench Press", persistedExercise.Name);
+    }
 }
