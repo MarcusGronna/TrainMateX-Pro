@@ -1,3 +1,5 @@
+namespace TrainMateX.Api;
+
 public class Exercise
 {
     public string Id { get; set; } = String.Empty;

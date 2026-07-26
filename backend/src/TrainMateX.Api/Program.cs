@@ -1,8 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using TrainMateX.Api;
-using TrainMateX.Api.DTOs;
+using TrainMateX.Api.Dtos;
+using TrainMateX.Api.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<ExerciseService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -29,39 +32,74 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("AllowLocalhost3000");
 
-app.MapGet("/api/exercises", async (AppDbContext dbContext) =>
+app.MapGet("/api/exercises", async (
+    ExerciseService service,
+    CancellationToken ct) =>
 {
-    var service = new ExerciseService(dbContext);
-    var exercises = await service.GetExercises();
-    var response = exercises.Select(exercise => new ExerciseListDto(
-        id: exercise.Id,
-        name: exercise.Name,
-        muscleGroup: exercise.MuscleGroup,
-        difficultyLevel: exercise.DifficultyLevel));
+    var exercises = await service.GetExercisesAsync(ct);
+    var response = exercises.Select(exercise => exercise.ToListDto());
 
     return Results.Ok(response);
 });
 
-app.MapGet("/api/exercises/{id}", async (string id, AppDbContext dbContext) =>
+app.MapGet("/api/exercises/{id}", async (
+    string id,
+    ExerciseService service,
+    CancellationToken ct) =>
 {
-    var service = new ExerciseService(dbContext);
-    var exercise = await service.GetExerciseById(id);
+    var exercise = await service.GetExerciseByIdAsync(id, ct);
 
     if (exercise is null)
     {
         return Results.NotFound();
     }
 
-    var response = new ExerciseDto(
-        id: exercise.Id,
-        name: exercise.Name,
-        description: exercise.Description,
-        instructions: exercise.Instructions,
-        muscleGroup: exercise.MuscleGroup,
-        equipment: exercise.Equipment,
-        difficultyLevel: exercise.DifficultyLevel);
+    return Results.Ok(exercise.ToDto());
+});
 
-    return Results.Ok(response);
+app.MapPost("/api/exercises", async (
+    SaveExerciseRequest request,
+    ExerciseService service,
+    CancellationToken ct) =>
+{
+    var result = await service.CreateExerciseAsync(request, ct);
+
+    return result.Type switch
+    {
+        CreateExerciseResultType.ValidationFailed =>
+            Results.ValidationProblem(result.Errors),
+
+        CreateExerciseResultType.Conflict =>
+            Results.Conflict(result.Errors),
+
+        CreateExerciseResultType.Created when result.Exercise is { } exercise =>
+            Results.Created($"/api/exercises/{exercise.Id}", exercise.ToDto()),
+
+        _ => Results.Problem()
+    };
+});
+
+app.MapPut("/api/exercises/{id}", async (
+    string id,
+    SaveExerciseRequest request,
+    ExerciseService service,
+    CancellationToken ct) =>
+{
+    var result = await service.UpdateExerciseAsync(id, request, ct);
+
+    return result.Type switch
+    {
+        UpdateExerciseResultType.NotFound =>
+            Results.NotFound(),
+
+        UpdateExerciseResultType.ValidationFailed =>
+            Results.ValidationProblem(result.Errors),
+
+        UpdateExerciseResultType.Updated when result.Exercise is { } exercise =>
+            Results.Ok(exercise.ToDto()),
+
+        _ => Results.Problem()
+    };
 });
 
 app.Run();
