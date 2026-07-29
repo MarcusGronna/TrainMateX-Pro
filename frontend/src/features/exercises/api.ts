@@ -51,6 +51,26 @@ export async function getExerciseById(id: string): Promise<ExerciseDetails | nul
 
   return response.json();
 }
+
+export async function createExercise(request: SaveExerciseRequest): Promise<SaveExerciseResult> {
+  const response = await fetch(`${API_BASE_URL}/api/exercises`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.text();
+
+    throw new Error(`Failed to create exercise: ${response.status} ${errorMessage}`);
+  }
+
+  const exercise = (await response.json()) as ExerciseDetails;
+
+  return { ok: true, exercise };
+}
 function normalizeErrors(errors: ApiErrors): ExerciseFormErrors {
   const normalized: ExerciseFormErrors = {};
 
