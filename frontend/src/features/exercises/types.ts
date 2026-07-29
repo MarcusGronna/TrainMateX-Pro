@@ -23,4 +23,8 @@ export type ExerciseFormErrors = Partial<Record<ExerciseFormField | "form", stri
 
 export type SaveExerciseResult =
   | { ok: true; exercise: ExerciseDetails }
-  | { ok: false; status: number; errors: ExerciseFormErrors };
+  | {
+      ok: false;
+      status: 400 | 404 | 409;
+      errors: ExerciseFormErrors;
+    };
