@@ -1,4 +1,17 @@
-import { ExerciseDetails, ExerciseListItem } from "./types";
+import {
+  ExerciseDetails,
+  ExerciseFormErrors,
+  ExerciseFormField,
+  ExerciseListItem,
+  SaveExerciseRequest,
+  SaveExerciseResult,
+} from "./types";
+
+type ApiErrors = Record<string, string[]>;
+
+type ValidationProblemDetails = {
+  errors?: ApiErrors;
+};
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5193";
 
