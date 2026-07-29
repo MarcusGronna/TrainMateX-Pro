@@ -29,3 +29,18 @@ export async function getExerciseById(id: string): Promise<ExerciseDetails | nul
 
   return response.json();
 }
+function normalizeErrors(errors: ApiErrors): ExerciseFormErrors {
+  const normalized: ExerciseFormErrors = {};
+
+  for (const [apiKey, messages] of Object.entries(errors)) {
+    const field = fieldByApiKey[apiKey];
+
+    if (field) {
+      normalized[field] = messages;
+    } else {
+      normalized.form = [...(normalized.form ?? []), ...messages];
+    }
+  }
+
+  return normalized;
+}
