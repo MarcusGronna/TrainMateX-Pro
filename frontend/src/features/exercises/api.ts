@@ -71,6 +71,28 @@ export async function createExercise(request: SaveExerciseRequest): Promise<Save
 
   return { ok: true, exercise };
 }
+
+export async function updateExercise(
+  id: string,
+  request: SaveExerciseRequest
+): Promise<SaveExerciseResult> {
+  const response = await fetch(`${API_BASE_URL}/api/exercises/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.text();
+
+    throw new Error(`Failed to update exercise: ${response.status} ${errorMessage}`);
+  }
+
+  const exercise = (await response.json()) as ExerciseDetails;
+
+  return { ok: true, exercise };
+}
+
 function normalizeErrors(errors: ApiErrors): ExerciseFormErrors {
   const normalized: ExerciseFormErrors = {};
 
