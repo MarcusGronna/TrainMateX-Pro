@@ -99,6 +99,26 @@ export async function updateExercise(
     body: JSON.stringify(request),
   });
 
+  if (response.status == 400) {
+    const problem = (await response.json()) as ValidationProblemDetails;
+
+    return {
+      ok: false,
+      status: 400,
+      errors: normalizeErrors(problem.errors ?? {}),
+    };
+  }
+
+  if (response.status == 404) {
+    return {
+      ok: false,
+      status: 404,
+      errors: {
+        form: ["The exercise was not found."],
+      },
+    };
+  }
+
   if (!response.ok) {
     const errorMessage = await response.text();
 
