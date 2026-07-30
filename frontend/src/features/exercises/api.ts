@@ -61,15 +61,32 @@ export async function createExercise(request: SaveExerciseRequest): Promise<Save
     body: JSON.stringify(request),
   });
 
-  if (!response.ok) {
-    const errorMessage = await response.text();
-
-    throw new Error(`Failed to create exercise: ${response.status} ${errorMessage}`);
+  if (response.ok) {
+    const exercise = (await response.json()) as ExerciseDetails;
+    return { ok: true, exercise };
   }
 
-  const exercise = (await response.json()) as ExerciseDetails;
+  if (response.status == 400) {
+    const problem = (await response.json()) as ValidationProblemDetails;
 
-  return { ok: true, exercise };
+    return {
+      ok: false,
+      status: 400,
+      errors: normalizeErrors(problem.errors ?? {}),
+    };
+  }
+
+  if (response.status == 409) {
+    const errors = (await response.json()) as ApiErrors;
+
+    return {
+      ok: false,
+      status: 409,
+      errors: normalizeErrors(errors),
+    };
+  }
+
+  throw new Error(`Unexpected create response: ${response.status}`);
 }
 
 export async function updateExercise(
