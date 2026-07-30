@@ -37,7 +37,7 @@ export async function getExercises(): Promise<ExerciseListItem[]> {
 }
 
 export async function getExerciseById(id: string): Promise<ExerciseDetails | null> {
-  const response = await fetch(`${API_BASE_URL}/api/exercises/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/api/exercises/${encodeURIComponent(id)}`, {
     cache: "no-store",
   });
 
