@@ -26,6 +26,10 @@ const emptyExercise: SaveExerciseRequest = {
   difficultyLevel: "Beginner",
 };
 
+const muscleGroup = ["Chest", "Back", "Legs", "Shoulders", "Arms", "Core"];
+const equipmentOptions = ["Barbell", "Dumbell", "Bodyweight", "Machine", "Cable", "Kettlebell"];
+const difficultyLevels = ["Beginner", "Intermediate", "Advanced"];
+
 export function ExerciseForm(props: ExerciseFormProps) {
   const router = useRouter();
 
