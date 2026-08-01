@@ -56,4 +56,34 @@ export function ExerciseForm(props: ExerciseFormProps) {
       [field]: undefined,
     }));
   }
+
+  function updateInstructions(index: number, value: string) {
+    setValues((current) => ({
+      ...current,
+      instructions: current.instructions.map((instruction, itemIndex) =>
+        itemIndex === index ? value : instruction
+      ),
+    }));
+
+    setErrors((current) => ({
+      ...current,
+      instructions: undefined,
+    }));
+  }
+  function addInstruction() {
+    setValues((current) => ({
+      ...current,
+      instructions: [...current.instructions, ""],
+    }));
+  }
+
+  function removeInstruction(index: number) {
+    setValues((current) => ({
+      ...current,
+      instructions:
+        current.instructions.length === 1
+          ? [""]
+          : current.instructions.filter((_, itemIndex) => itemIndex !== index),
+    }));
+  }
 }
