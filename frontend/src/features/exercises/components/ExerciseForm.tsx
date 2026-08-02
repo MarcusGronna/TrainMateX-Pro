@@ -2,6 +2,8 @@
 import { useRouter } from "next/navigation";
 import { ExerciseFormErrors, ExerciseFormField, SaveExerciseRequest } from "../types";
 import { useState } from "react";
+import type { SubmitEvent as ReactSubmitEvent } from "react";
+import { createExercise, updateExercise } from "../api";
 
 type ExerciseFormProps =
   | {
@@ -92,5 +94,31 @@ export function ExerciseForm(props: ExerciseFormProps) {
           ? [""]
           : current.instructions.filter((_, itemIndex) => itemIndex !== index),
     }));
+  }
+
+  async function handleSubmit(event: ReactSubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setErrors({});
+    setIsSubmitting(true);
+
+    try {
+      const result =
+        props.mode === "create"
+          ? await createExercise(values)
+          : await updateExercise(props.exerciseId, values);
+
+      if (!result.ok) {
+        setErrors(result.errors);
+        return;
+      }
+
+      router.push(`/exercises/${encodeURIComponent(result.exercise.id)}`);
+    } catch {
+      setErrors({
+        form: ["The exercise could not be saved. Please try again."],
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 }
