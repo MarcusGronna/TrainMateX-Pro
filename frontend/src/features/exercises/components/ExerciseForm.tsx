@@ -121,4 +121,82 @@ export function ExerciseForm(props: ExerciseFormProps) {
       setIsSubmitting(false);
     }
   }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {errors.form?.map((message) => (
+        <p key={message} role="alert">
+          {message}
+        </p>
+      ))}
+
+      <div>
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          name="name"
+          value={values.name}
+          onChange={(event) => updateField("name", event.target.value)}
+          aria-invalid={Boolean(errors.name?.length)}
+          aria-describedby={errors.name ? "name-errors" : undefined}
+          required
+        />
+
+        {errors.name?.map((message) => (
+          <p id="name-errors" key={message}>
+            {message}
+          </p>
+        ))}
+      </div>
+
+      <div>
+        <label htmlFor="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          value={values.description}
+          onChange={(event) => updateField("description", event.target.value)}
+          aria-invalid={Boolean(errors.description?.length)}
+          aria-describedby={errors.description ? "description-errors" : undefined}
+          required
+        />
+
+        {errors.description?.map((message) => (
+          <p id="description-errors" key={message}>
+            {message}
+          </p>
+        ))}
+      </div>
+
+      <fieldset>
+        <legend>Instructions</legend>
+
+        {values.instructions.map((instruction, index) => (
+          <div key={index}>
+            <label htmlFor={`instruction-${index}`}>Instruction {index + 1}</label>
+            <input
+              id={`instruction-${index}`}
+              value={instruction}
+              onChange={(event) => updateInstructions(index, event.target.value)}
+            />
+            <button type="button" onClick={() => removeInstruction(index)}>
+              Remove
+            </button>
+          </div>
+        ))}
+
+        <button type="button" onClick={addInstruction}>
+          Add instruction
+        </button>
+
+        {errors.instructions?.map((message) => (
+          <p key={message}>{message}</p>
+        ))}
+      </fieldset>
+
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving..." : props.mode === "create" ? "Create exercise" : "Save changes"}
+      </button>
+    </form>
+  );
 }
