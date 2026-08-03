@@ -194,6 +194,69 @@ export function ExerciseForm(props: ExerciseFormProps) {
         ))}
       </fieldset>
 
+      <label htmlFor="muscleGroup">Muscle group</label>
+      <select
+        id="muscleGroup"
+        value={values.muscleGroup}
+        onChange={(event) => updateField("muscleGroup", event.target.value)}
+      >
+        {muscleGroups.map((group) => (
+          <option key={group} value={group}>
+            {group}
+          </option>
+        ))}
+      </select>
+
+      <div>
+        <label htmlFor="equipment">Equipment</label>
+        <select
+          id="equipment"
+          name="equipment"
+          value={values.equipment}
+          onChange={(event) => updateField("equipment", event.target.value)}
+          aria-invalid={Boolean(errors.equipment?.length)}
+          aria-describedby={errors.equipment ? "equipment-errors" : undefined}
+          required
+        >
+          {equipmentOptions.map((equipment) => (
+            <option key={equipment} value={equipment}>
+              {equipment}
+            </option>
+          ))}
+        </select>
+
+        {errors.equipment?.map((message) => (
+          <p id="equipment-errors" key={message}>
+            {message}
+          </p>
+        ))}
+      </div>
+
+      <div>
+        <label htmlFor="difficultyLevel">Difficulty level</label>
+        <select
+          id="difficultyLevel"
+          name="difficultyLevel"
+          value={values.difficultyLevel}
+          onChange={(event) => updateField("difficultyLevel", event.target.value)}
+          aria-invalid={Boolean(errors.difficultyLevel?.length)}
+          aria-describedby={errors.difficultyLevel ? "difficultyLevel-errors" : undefined}
+          required
+        >
+          {difficultyLevels.map((difficultyLevel) => (
+            <option key={difficultyLevel} value={difficultyLevel}>
+              {difficultyLevel}
+            </option>
+          ))}
+        </select>
+
+        {errors.difficultyLevel?.map((message) => (
+          <p id="difficultyLevel-errors" key={message}>
+            {message}
+          </p>
+        ))}
+      </div>
+
       <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Saving..." : props.mode === "create" ? "Create exercise" : "Save changes"}
       </button>
