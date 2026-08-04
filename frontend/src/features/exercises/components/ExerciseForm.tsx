@@ -197,13 +197,23 @@ export function ExerciseForm(props: ExerciseFormProps) {
       <label htmlFor="muscleGroup">Muscle group</label>
       <select
         id="muscleGroup"
+        name="muscleGroup"
         value={values.muscleGroup}
         onChange={(event) => updateField("muscleGroup", event.target.value)}
+        aria-invalid={Boolean(errors.muscleGroup?.length)}
+        aria-describedby={errors.muscleGroup ? "muscleGroup-errors" : undefined}
+        required
       >
         {muscleGroups.map((group) => (
           <option key={group} value={group}>
             {group}
           </option>
+        ))}
+
+        {errors.muscleGroup?.map((message) => (
+          <p id="muscleGroup-errors" key={message}>
+            {message}
+          </p>
         ))}
       </select>
 
