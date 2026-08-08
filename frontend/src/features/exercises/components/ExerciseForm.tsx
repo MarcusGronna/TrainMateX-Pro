@@ -209,13 +209,13 @@ export function ExerciseForm(props: ExerciseFormProps) {
             {group}
           </option>
         ))}
-
-        {errors.muscleGroup?.map((message) => (
-          <p id="muscleGroup-errors" key={message}>
-            {message}
-          </p>
-        ))}
       </select>
+
+      {errors.muscleGroup?.map((message) => (
+        <p id="muscleGroup-errors" key={message}>
+          {message}
+        </p>
+      ))}
 
       <div>
         <label htmlFor="equipment">Equipment</label>
