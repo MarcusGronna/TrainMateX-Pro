@@ -39,6 +39,9 @@ const equipmentOptions: string[] = [
 ];
 const difficultyLevels: string[] = ["Beginner", "Intermediate", "Advanced"];
 
+const controlStyles =
+  "w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-purple-400 dark:focus:ring-purple-900";
+
 export function ExerciseForm(props: ExerciseFormProps) {
   const router = useRouter();
 
@@ -123,15 +126,24 @@ export function ExerciseForm(props: ExerciseFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="mx-auto max-w-3xl space-y-6 rounded-2xl border border-gray-200 bg-white p-6 text-gray-900 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+    >
       {errors.form?.map((message) => (
-        <p key={message} role="alert">
+        <p
+          key={message}
+          role="alert"
+          className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-700"
+        >
           {message}
         </p>
       ))}
 
-      <div>
-        <label htmlFor="name">Name</label>
+      <div className="space-y-2">
+        <label htmlFor="name" className="text-sm font-bold">
+          Name
+        </label>
         <input
           id="name"
           name="name"
@@ -140,17 +152,20 @@ export function ExerciseForm(props: ExerciseFormProps) {
           aria-invalid={Boolean(errors.name?.length)}
           aria-describedby={errors.name ? "name-errors" : undefined}
           required
+          className={controlStyles}
         />
 
         {errors.name?.map((message) => (
-          <p id="name-errors" key={message}>
+          <p id="name-errors" key={message} className="text-sm text-red-600">
             {message}
           </p>
         ))}
       </div>
 
-      <div>
-        <label htmlFor="description">Description</label>
+      <div className="space-y-2">
+        <label htmlFor="description" className="text-sm font-bold">
+          Description
+        </label>
         <textarea
           id="description"
           name="description"
@@ -159,115 +174,157 @@ export function ExerciseForm(props: ExerciseFormProps) {
           aria-invalid={Boolean(errors.description?.length)}
           aria-describedby={errors.description ? "description-errors" : undefined}
           required
+          rows={4}
+          className={controlStyles}
         />
 
         {errors.description?.map((message) => (
-          <p id="description-errors" key={message}>
+          <p id="description-errors" key={message} className="text-sm text-red-600">
             {message}
           </p>
         ))}
       </div>
 
-      <fieldset>
-        <legend>Instructions</legend>
+      <fieldset className="space-y-3 rounded-xl border border-gray-200 p-4">
+        <legend className="px-1 text-sm font-bold">Instructions</legend>
 
         {values.instructions.map((instruction, index) => (
-          <div key={index}>
-            <label htmlFor={`instruction-${index}`}>Instruction {index + 1}</label>
+          <div key={index} className="flex gap-2">
             <input
               id={`instruction-${index}`}
               value={instruction}
               onChange={(event) => updateInstructions(index, event.target.value)}
+              aria-label={`Instruction ${index + 1}`}
+              className={controlStyles}
             />
-            <button type="button" onClick={() => removeInstruction(index)}>
+            <button
+              type="button"
+              onClick={() => removeInstruction(index)}
+              className="rounded-xl px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+            >
               Remove
             </button>
           </div>
         ))}
 
-        <button type="button" onClick={addInstruction}>
+        <button
+          type="button"
+          onClick={addInstruction}
+          className="rounded-xl border border-purple-200 px-3 py-2 text-sm font-medium text-purple-700 hover:bg-purple-50"
+        >
           Add instruction
         </button>
 
         {errors.instructions?.map((message) => (
-          <p key={message}>{message}</p>
+          <p key={message} className="text-sm text-red-600">
+            {message}
+          </p>
         ))}
       </fieldset>
 
-      <label htmlFor="muscleGroup">Muscle group</label>
-      <select
-        id="muscleGroup"
-        name="muscleGroup"
-        value={values.muscleGroup}
-        onChange={(event) => updateField("muscleGroup", event.target.value)}
-        aria-invalid={Boolean(errors.muscleGroup?.length)}
-        aria-describedby={errors.muscleGroup ? "muscleGroup-errors" : undefined}
-        required
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="space-y-2">
+          <label htmlFor="muscleGroup" className="text-sm font-bold">
+            Muscle group
+          </label>
+          <select
+            id="muscleGroup"
+            name="muscleGroup"
+            value={values.muscleGroup}
+            onChange={(event) => updateField("muscleGroup", event.target.value)}
+            aria-invalid={Boolean(errors.muscleGroup?.length)}
+            aria-describedby={errors.muscleGroup ? "muscleGroup-errors" : undefined}
+            required
+            className={controlStyles}
+          >
+            {muscleGroups.map((group) => (
+              <option
+                key={group}
+                value={group}
+                className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
+              >
+                {group}
+              </option>
+            ))}
+          </select>
+
+          {errors.muscleGroup?.map((message) => (
+            <p id="muscleGroup-errors" key={message} className="text-sm text-red-600">
+              {message}
+            </p>
+          ))}
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="equipment" className="text-sm font-bold">
+            Equipment
+          </label>
+          <select
+            id="equipment"
+            name="equipment"
+            value={values.equipment}
+            onChange={(event) => updateField("equipment", event.target.value)}
+            aria-invalid={Boolean(errors.equipment?.length)}
+            aria-describedby={errors.equipment ? "equipment-errors" : undefined}
+            required
+            className={controlStyles}
+          >
+            {equipmentOptions.map((equipment) => (
+              <option
+                key={equipment}
+                value={equipment}
+                className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
+              >
+                {equipment}
+              </option>
+            ))}
+          </select>
+
+          {errors.equipment?.map((message) => (
+            <p id="equipment-errors" key={message} className="text-sm text-red-600">
+              {message}
+            </p>
+          ))}
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="difficultyLevel" className="text-sm font-bold">
+            Difficulty
+          </label>
+          <select
+            id="difficultyLevel"
+            name="difficultyLevel"
+            value={values.difficultyLevel}
+            onChange={(event) => updateField("difficultyLevel", event.target.value)}
+            aria-invalid={Boolean(errors.difficultyLevel?.length)}
+            aria-describedby={errors.difficultyLevel ? "difficultyLevel-errors" : undefined}
+            required
+            className={controlStyles}
+          >
+            {difficultyLevels.map((level) => (
+              <option
+                key={level}
+                value={level}
+                className="bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
+              >
+                {level}
+              </option>
+            ))}
+          </select>
+
+          {errors.difficultyLevel?.map((message) => (
+            <p id="difficultyLevel-errors" key={message} className="text-sm text-red-600">
+              {message}
+            </p>
+          ))}
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="rounded-xl bg-purple-600 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {muscleGroups.map((group) => (
-          <option key={group} value={group}>
-            {group}
-          </option>
-        ))}
-      </select>
-
-      {errors.muscleGroup?.map((message) => (
-        <p id="muscleGroup-errors" key={message}>
-          {message}
-        </p>
-      ))}
-
-      <div>
-        <label htmlFor="equipment">Equipment</label>
-        <select
-          id="equipment"
-          name="equipment"
-          value={values.equipment}
-          onChange={(event) => updateField("equipment", event.target.value)}
-          aria-invalid={Boolean(errors.equipment?.length)}
-          aria-describedby={errors.equipment ? "equipment-errors" : undefined}
-          required
-        >
-          {equipmentOptions.map((equipment) => (
-            <option key={equipment} value={equipment}>
-              {equipment}
-            </option>
-          ))}
-        </select>
-
-        {errors.equipment?.map((message) => (
-          <p id="equipment-errors" key={message}>
-            {message}
-          </p>
-        ))}
-      </div>
-
-      <div>
-        <label htmlFor="difficultyLevel">Difficulty level</label>
-        <select
-          id="difficultyLevel"
-          name="difficultyLevel"
-          value={values.difficultyLevel}
-          onChange={(event) => updateField("difficultyLevel", event.target.value)}
-          aria-invalid={Boolean(errors.difficultyLevel?.length)}
-          aria-describedby={errors.difficultyLevel ? "difficultyLevel-errors" : undefined}
-          required
-        >
-          {difficultyLevels.map((difficultyLevel) => (
-            <option key={difficultyLevel} value={difficultyLevel}>
-              {difficultyLevel}
-            </option>
-          ))}
-        </select>
-
-        {errors.difficultyLevel?.map((message) => (
-          <p id="difficultyLevel-errors" key={message}>
-            {message}
-          </p>
-        ))}
-      </div>
-
-      <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Saving..." : props.mode === "create" ? "Create exercise" : "Save changes"}
       </button>
     </form>
