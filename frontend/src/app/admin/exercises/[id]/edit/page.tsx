@@ -27,8 +27,8 @@ export default async function EditExercisePage({ params }: EditExercisePageProps
   };
 
   return (
-    <main>
-      <h1>Edit exercise</h1>
+    <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 text-gray-900 dark:text-gray-100">
+      <h1 className="text-3xl font-bold tracking-tight">Edit exercise</h1>
       <ExerciseForm mode="edit" exerciseId={exercise.id} initialValues={initialValues} />
     </main>
   );
