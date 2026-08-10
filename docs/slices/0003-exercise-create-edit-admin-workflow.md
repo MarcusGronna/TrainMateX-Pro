@@ -2,7 +2,7 @@
 
 ## Status
 
-Planned
+Complete
 
 ## Context
 
@@ -343,4 +343,3 @@ Manual verification is enough for this slice, but automated frontend tests can b
 * The compact enum values may need to expand as the exercise library grows.
 * Stable IDs avoid broken links, but edited exercise names may no longer match the original slug.
 * No schema migration is expected unless implementation reveals a missing database requirement.
-
