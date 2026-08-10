@@ -37,6 +37,25 @@ A read-only exercise library allowing users to browse exercises and view detaile
 - `/exercises` — exercise library page
 - `/exercises/[id]` — exercise detail page
 
+### Exercise Persistence (Slice 2)
+
+Exercise data is stored in PostgreSQL and accessed through Entity Framework Core while preserving the public read API contract.
+
+- PostgreSQL development database through Docker Compose
+- EF Core persistence and migrations
+- Seeded exercise data for local development
+
+### Exercise Administration (Slice 3)
+
+An admin-style workflow for creating and editing exercises while keeping the public exercise library read-only.
+
+- `POST /api/exercises` — create an exercise with a generated slug ID
+- `PUT /api/exercises/{id}` — update an exercise while preserving its ID
+- `/admin/exercises` — exercise management page
+- `/admin/exercises/new` — create exercise page
+- `/admin/exercises/[id]/edit` — edit exercise page
+- Validation and duplicate-slug conflict handling
+
 ## Getting Started
 
 ### Prerequisites
@@ -86,6 +105,8 @@ Useful backend endpoints:
 
 - `GET http://localhost:5193/api/exercises`
 - `GET http://localhost:5193/api/exercises/{id}`
+- `POST http://localhost:5193/api/exercises`
+- `PUT http://localhost:5193/api/exercises/{id}`
 
 ### Frontend
 
@@ -97,16 +118,16 @@ npm run dev
 
 The app runs at [http://localhost:3000](http://localhost:3000).
 
-### Tests
+### Verification
 
 ```bash
 # Backend tests
 cd backend
 dotnet test
 
-# Frontend lint
+# Frontend production build
 cd frontend
-npm run lint
+npm run build
 ```
 
 ## Commit Messages

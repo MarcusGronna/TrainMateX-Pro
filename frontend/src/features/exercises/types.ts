@@ -14,3 +14,17 @@ export type ExerciseDetails = {
   equipment: string;
   difficultyLevel: string;
 };
+
+export type SaveExerciseRequest = Omit<ExerciseDetails, "id">;
+
+export type ExerciseFormField = keyof SaveExerciseRequest;
+
+export type ExerciseFormErrors = Partial<Record<ExerciseFormField | "form", string[]>>;
+
+export type SaveExerciseResult =
+  | { ok: true; exercise: ExerciseDetails }
+  | {
+      ok: false;
+      status: 400 | 404 | 409;
+      errors: ExerciseFormErrors;
+    };
