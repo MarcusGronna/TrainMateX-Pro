@@ -338,4 +338,18 @@ public class ExerciseTests
 
         Assert.NotNull(remainingExercise);
     }
+
+    [Fact]
+    public async Task DeleteExerciseAsync_WithUnknownId_ReturnsFalseAndDoesNotRemoveExercises()
+    {
+        var service = new ExerciseService(_context);
+        var countBefore = await _context.Exercises.CountAsync();
+
+        var result = await  service.DeleteExerciseAsync("unknown");
+
+        var countAfter = await _context.Exercises.CountAsync();
+
+        Assert.False(result);
+        Assert.Equal(countBefore, countAfter);
+    }
 }
