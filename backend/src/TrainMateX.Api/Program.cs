@@ -102,6 +102,21 @@ app.MapPut("/api/exercises/{id}", async (
     };
 });
 
+app.MapDelete("/api/excercises/{id}", async (
+    string id, 
+    ExerciseService service, 
+    CancellationToken ct) =>
+{
+    var deleted = await service.DeleteExerciseAsync(id, ct);
+
+    if (!deleted)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.NoContent();
+});
+
 app.Run();
 
 public partial class Program { }
