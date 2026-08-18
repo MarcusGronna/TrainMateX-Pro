@@ -316,4 +316,40 @@ public class ExerciseTests
         Assert.NotNull(persistedExercise);
         Assert.Equal(["Step one", "Step two"], persistedExercise.Instructions);
     }
+
+    [Fact]
+    public async Task DeleteExerciseAsync_WithExistingExercise_ReturnsTrueAndRemovesExercise()
+    {
+        var service = new ExerciseService(_context);
+
+        var result = await service.DeleteExerciseAsync("bench-press");
+
+        Assert.True(result);
+
+        _context.ChangeTracker.Clear();
+
+        var deletedExercise = await _context.Exercises
+            .FindAsync("bench-press");
+
+        Assert.Null(deletedExercise);
+
+        var remainingExercise = await _context.Exercises
+            .FindAsync("squat");
+
+        Assert.NotNull(remainingExercise);
+    }
+
+    [Fact]
+    public async Task DeleteExerciseAsync_WithUnknownId_ReturnsFalseAndDoesNotRemoveExercises()
+    {
+        var service = new ExerciseService(_context);
+        var countBefore = await _context.Exercises.CountAsync();
+
+        var result = await  service.DeleteExerciseAsync("unknown");
+
+        var countAfter = await _context.Exercises.CountAsync();
+
+        Assert.False(result);
+        Assert.Equal(countBefore, countAfter);
+    }
 }

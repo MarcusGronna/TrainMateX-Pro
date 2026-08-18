@@ -128,6 +128,22 @@ public class ExerciseService(AppDbContext context)
                     Errors: validationResult.Errors);
     }
 
+    public async Task<bool> DeleteExerciseAsync(string id, CancellationToken ct = default)
+    {
+        var exercise = await _context.Exercises
+            .FirstOrDefaultAsync(exercise => exercise.Id == id, ct);
+
+        if (exercise is null)
+        {
+            return false;
+        }
+
+        _context.Exercises.Remove(exercise);
+        await _context.SaveChangesAsync(ct);
+
+        return true;
+    }
+
     private async Task<bool> ExerciseExistsAsync(
         string id,
         CancellationToken ct)
