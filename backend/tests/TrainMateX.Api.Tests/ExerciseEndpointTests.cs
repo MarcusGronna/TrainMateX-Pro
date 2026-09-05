@@ -305,4 +305,30 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    [Fact]
+    public async Task DeleteExercise_ShouldReturn204AndRemoveExercise()
+    {
+        await _factory.ResetDatabaseAsync();
+
+        var deleteResponse = await _client.DeleteAsync(
+            "/api/exercises/bench-press");
+
+        Assert.Equal(
+            HttpStatusCode.NoContent,
+            deleteResponse.StatusCode);
+
+        var deletedExerciseResponse = await _client.GetAsync(
+            "/api/exercises/bench-press");
+
+        Assert.Equal(
+            HttpStatusCode.NotFound,
+            deletedExerciseResponse.StatusCode);
+
+        var remainingExerciseResponse = await _client.GetAsync(
+            "/api/exercises/squat");
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            remainingExerciseResponse.StatusCode);
+    }
 }
