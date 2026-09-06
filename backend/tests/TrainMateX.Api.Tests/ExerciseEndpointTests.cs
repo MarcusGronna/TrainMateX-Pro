@@ -331,4 +331,17 @@ public class ExerciseEndpointTests : IClassFixture<TrainMateXApiFactory>
             HttpStatusCode.OK,
             remainingExerciseResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task DeleteExercise_ShouldReturn404_WhenExerciseIsMissing()
+    {
+        await _factory.ResetDatabaseAsync();
+
+        var response = await _client.DeleteAsync(
+            "/api/exercises/missing-exercise");
+
+        Assert.Equal(
+            HttpStatusCode.NotFound,
+            response.StatusCode);
+    }
 }
