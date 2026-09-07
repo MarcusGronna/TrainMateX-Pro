@@ -28,3 +28,9 @@ export type SaveExerciseResult =
       status: 400 | 404 | 409;
       errors: ExerciseFormErrors;
     };
+
+export type DeleteExerciseResult = 
+  | { ok: true } 
+  | { ok: false; 
+      status: 404;
+    };
