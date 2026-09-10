@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import { deleteExercise } from "../api";
 import { ExerciseListItem } from "../types";
 import Link from "next/link";
-import { useState } from "react";
 
 type AdminExerciseListProps = {
   exercises: ExerciseListItem[];
@@ -33,14 +35,55 @@ export function AdminExerciseList({ exercises }: AdminExerciseListProps) {
             </div>
           </div>
 
-          <Link
-            href={`/admin/exercises/${encodeURIComponent(exercise.id)}/edit`}
-            className="rounded-xl border border-purple-200 px-3 py-2 text-sm font-medium text-purple-700 transition hover:bg-purple-50 dark:border-purple-800 dark:text-purple-300 dark:hover:bg-purple-950"
-          >
-            Edit
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/admin/exercises/${encodeURIComponent(exercise.id)}/edit`}
+              className="rounded-xl border border-purple-200 px-3 py-2 text-sm font-medium text-purple-700 transition hover:bg-purple-50 dark:border-purple-800 dark:text-purple-300 dark:hover:bg-purple-950"
+            >
+              Edit
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => void handleDelete(exercise)}
+              disabled={deletingId !== null}
+              className="cursor-pointer rounded-xl border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {deletingId === exercise.id ? "Deleting..." : "Delete"}
+            </button>
+          </div>
         </li>
       ))}
     </ul>
   );
+
+  async function handleDelete(exercise: ExerciseListItem) {
+    if (deletingId !== null) {
+      return;
+    }
+
+    const confirmed = window.confirm(`Delete "${exercise.name}" permanently?`);
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeleteError(null);
+    setDeletingId(exercise.id);
+
+    try {
+      const result = await deleteExercise(exercise.id);
+
+      if (!result.ok) {
+        setDeleteError(`"${exercise.name}" could not be deleted because it was not found.`);
+        return;
+      }
+
+      router.refresh();
+    } catch {
+      setDeleteError(`"${exercise.name}" could not be deleted. Please try again.`);
+    } finally {
+      setDeletingId(null);
+    }
+  }
 }
