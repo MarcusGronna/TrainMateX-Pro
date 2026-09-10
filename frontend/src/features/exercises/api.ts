@@ -1,4 +1,5 @@
 import {
+  DeleteExerciseResult,
   ExerciseDetails,
   ExerciseFormErrors,
   ExerciseFormField,
@@ -24,6 +25,7 @@ const fieldByApiKey: Record<string, ExerciseFormField> = {
   DifficultyLevel: "difficultyLevel",
 };
 
+// TODO: If no connection to backend - display site without error
 export async function getExercises(): Promise<ExerciseListItem[]> {
   const response = await fetch(`${API_BASE_URL}/api/exercises`, {
     cache: "no-store",
@@ -128,6 +130,25 @@ export async function updateExercise(
   const exercise = (await response.json()) as ExerciseDetails;
 
   return { ok: true, exercise };
+}
+
+export async function deleteExercise(id: string): Promise<DeleteExerciseResult> {
+  const response = await fetch(`${API_BASE_URL}/api/exercises/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+
+  if (response.status == 204) {
+    return { ok: true };
+  }
+
+  if (response.status == 404) {
+    return {
+      ok: false,
+      status: 404,
+    };
+  }
+
+  throw new Error(`Unexpected delete response: ${response.status}`);
 }
 
 function normalizeErrors(errors: ApiErrors): ExerciseFormErrors {

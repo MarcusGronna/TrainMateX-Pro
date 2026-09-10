@@ -102,7 +102,7 @@ app.MapPut("/api/exercises/{id}", async (
     };
 });
 
-app.MapDelete("/api/excercises/{id}", async (
+app.MapDelete("/api/exercises/{id}", async (
     string id, 
     ExerciseService service, 
     CancellationToken ct) =>
