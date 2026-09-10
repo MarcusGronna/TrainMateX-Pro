@@ -25,6 +25,7 @@ const fieldByApiKey: Record<string, ExerciseFormField> = {
   DifficultyLevel: "difficultyLevel",
 };
 
+// TODO: If no connection to backend - display site without error
 export async function getExercises(): Promise<ExerciseListItem[]> {
   const response = await fetch(`${API_BASE_URL}/api/exercises`, {
     cache: "no-store",
