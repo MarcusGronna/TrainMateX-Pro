@@ -56,6 +56,16 @@ An admin-style workflow for creating and editing exercises while keeping the pub
 - `/admin/exercises/[id]/edit` — edit exercise page
 - Validation and duplicate-slug conflict handling
 
+### Exercise Deletion (Slice 4)
+
+The admin-style exercise management workflow supports confirmed permanent deletion of exercises.
+
+- `DELETE /api/exercises/{id}` — permanently delete an exercise
+- `204 No Content` for a successful deletion
+- `404 Not Found` when the exercise does not exist
+- Confirmation, pending and failure states in the admin exercise list
+- Authoritative list refresh after a successful deletion
+
 ## Getting Started
 
 ### Prerequisites
@@ -107,6 +117,7 @@ Useful backend endpoints:
 - `GET http://localhost:5193/api/exercises/{id}`
 - `POST http://localhost:5193/api/exercises`
 - `PUT http://localhost:5193/api/exercises/{id}`
+- `DELETE http://localhost:5193/api/exercises/{id}`
 
 ### Frontend
 
