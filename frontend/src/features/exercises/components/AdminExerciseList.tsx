@@ -18,6 +18,11 @@ export function AdminExerciseList({ exercises }: AdminExerciseListProps) {
 
   return (
     <ul className="space-y-3">
+      {deleteError && (
+        <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-700">
+          {deleteError}
+        </p>
+      )}
       {exercises.map((exercise) => (
         <li
           key={exercise.id}
