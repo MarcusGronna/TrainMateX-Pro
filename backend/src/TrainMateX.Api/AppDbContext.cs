@@ -7,7 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Exercise> Exercises => Set<Exercise>();
     public DbSet<WorkoutTemplate> WorkoutTemplates => Set<WorkoutTemplate>();
     public DbSet<WorkoutTemplateExercise> WorkoutTemplateExercises => Set<WorkoutTemplateExercise>();
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Exercise>(entity =>
@@ -21,7 +21,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(e => e.Equipment).IsRequired();
             entity.Property(e => e.DifficultyLevel).IsRequired();
 
-            entity.Property(e => e.Instructions).HasColumnType("jsonb");
+            entity.Property(e => e.Instructions)
+                .HasColumnType("jsonb");
         });
 
         modelBuilder.Entity<WorkoutTemplate>(entity =>
@@ -31,7 +32,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(e => e.Id).IsRequired();
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Description).IsRequired();
-            entity.Property(e => e.WorkoutTemplateExercises).IsRequired();
+
+            entity.HasMany(workoutTemplate => workoutTemplate.WorkoutTemplateExercises)
+                .WithOne(workoutTemplateExercise => workoutTemplateExercise.WorkoutTemplate)
+                .HasForeignKey(workoutTemplateExercise => workoutTemplateExercise.WorkoutTemplateId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<WorkoutTemplateExercise>(entity =>
