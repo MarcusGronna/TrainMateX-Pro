@@ -6,7 +6,7 @@ public class WorkoutTemplateExercise
     public string ExerciseId { get; set; } = string.Empty;
 
     public int Position { get; set; }
-    public int Set { get; set; }
+    public int Sets { get; set; }
     public int Reps { get; set; }
 
     public WorkoutTemplate WorkoutTemplate { get; set; } = null!;
