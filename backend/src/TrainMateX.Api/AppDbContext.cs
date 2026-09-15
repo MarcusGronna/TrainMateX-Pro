@@ -27,11 +27,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<WorkoutTemplate>(entity =>
         {
-            entity.HasKey(e => e.Id);
+            entity.HasKey(WorkoutTemplate => WorkoutTemplate.Id);
 
-            entity.Property(e => e.Id).IsRequired();
-            entity.Property(e => e.Name).IsRequired();
-            entity.Property(e => e.Description).IsRequired();
+            entity.Property(WorkoutTemplate => WorkoutTemplate.Name).IsRequired();
+            entity.Property(WorkoutTemplate => WorkoutTemplate.Description).IsRequired();
 
             entity.HasMany(workoutTemplate => workoutTemplate.WorkoutTemplateExercises)
                 .WithOne(workoutTemplateExercise => workoutTemplateExercise.WorkoutTemplate)
@@ -41,26 +40,30 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<WorkoutTemplateExercise>(entity =>
         {
-            entity.HasKey(e => new
+            entity.HasKey(WorkoutTemplateExercise => new
             {
-                e.WorkoutTemplateId,
-                e.ExerciseId
+                WorkoutTemplateExercise.WorkoutTemplateId,
+                WorkoutTemplateExercise.ExerciseId
             });
 
-            entity.Property(e => e.WorkoutTemplateId).IsRequired();
-            entity.Property(e => e.ExerciseId).IsRequired();
-            entity.Property(e => e.Position).IsRequired();
-            entity.Property(e => e.Set).IsRequired();
-            entity.Property(e => e.Reps).IsRequired();
+            entity.HasIndex(workoutTemplateExercise => new
+            {
+                workoutTemplateExercise.WorkoutTemplateId,
+                workoutTemplateExercise.Position
+            })
+            .IsUnique();
 
-            entity.HasOne(e => e.WorkoutTemplate)
-                .WithMany(e => e.WorkoutTemplateExercises)
-                .HasForeignKey(e => e.WorkoutTemplateId)
+            entity.Property(workoutTemplateExercise => workoutTemplateExercise.ExerciseId)
+                .IsRequired();
+
+            entity.HasOne(WorkoutTemplateExercise => WorkoutTemplateExercise.WorkoutTemplate)
+                .WithMany(WorkoutTemplate => WorkoutTemplate.WorkoutTemplateExercises)
+                .HasForeignKey(WorkoutTemplateExercise => WorkoutTemplateExercise.WorkoutTemplateId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(e => e.Exercise)
-                .WithMany()
-                .HasForeignKey(e => e.ExerciseId)
+            entity.HasOne(WorkoutTemplateExercise => WorkoutTemplateExercise.Exercise)
+                .WithMany(exercise => exercise.WorkoutTemplateExercises)
+                .HasForeignKey(WorkoutTemplateExercise => WorkoutTemplateExercise.ExerciseId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
