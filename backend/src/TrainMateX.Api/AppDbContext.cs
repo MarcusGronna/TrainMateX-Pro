@@ -31,11 +31,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
             entity.Property(WorkoutTemplate => WorkoutTemplate.Name).IsRequired();
             entity.Property(WorkoutTemplate => WorkoutTemplate.Description).IsRequired();
-
-            entity.HasMany(workoutTemplate => workoutTemplate.WorkoutTemplateExercises)
-                .WithOne(workoutTemplateExercise => workoutTemplateExercise.WorkoutTemplate)
-                .HasForeignKey(workoutTemplateExercise => workoutTemplateExercise.WorkoutTemplateId)
-                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<WorkoutTemplateExercise>(entity =>
