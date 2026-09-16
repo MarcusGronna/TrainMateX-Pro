@@ -1,6 +1,6 @@
 ﻿namespace TrainMateX.Api.Dtos;
 
-public record SaveExerciseRequest(
+public sealed record SaveExerciseRequest(
     string Name,
     string Description,
     List<string> Instructions,

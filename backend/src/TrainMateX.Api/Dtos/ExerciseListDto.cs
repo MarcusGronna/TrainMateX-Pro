@@ -1,6 +1,6 @@
 ﻿namespace TrainMateX.Api.Dtos;
 
-public record ExerciseListDto(
+public sealed record ExerciseListDto(
     string Id,
     string Name,
     string MuscleGroup,
