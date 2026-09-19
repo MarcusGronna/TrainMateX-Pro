@@ -9,4 +9,6 @@ public class Exercise
     public string MuscleGroup { get; set; } = String.Empty;
     public string Equipment { get; set; } = String.Empty;
     public string DifficultyLevel { get; set; } = String.Empty;
+
+    public List<WorkoutTemplateExercise> WorkoutTemplateExercises { get; set; } = [];
 }

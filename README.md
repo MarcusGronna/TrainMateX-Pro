@@ -94,6 +94,25 @@ Start PostgreSQL:
 docker compose up -d
 ```
 
+To interact with PostgreSQL directly through Docker Desktop, open the terminal for the
+`trainmatex-postgres` container and run:
+
+```sh
+psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+```
+
+Docker Compose injects these variables into the running container from `backend/.env`, so
+`POSTGRES_USER` and `POSTGRES_DB` are available in the container terminal. Useful `psql`
+commands include:
+
+```sql
+\conninfo
+\dt
+\q
+```
+
+Use `\conninfo` to inspect the current connection, `\dt` to list tables and `\q` to exit.
+
 Apply EF Core migrations:
 
 ```bash
